@@ -71,9 +71,9 @@ def greedy_search(estimator, data, target=None, limit=None, prior_solution_set=N
 
 
 def sort_generator(estimator, data, Y, selected, candidates):
-    for candidate in candidates:
-        val = estimator(data[:, (*selected, candidate)], Y)
-        yield val, candidate
+    for candidate_idx in candidates:
+        result = estimator(data[:, (*selected, candidate_idx)], Y)
+        yield result, candidate_idx
 
 
 def main():
