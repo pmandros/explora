@@ -100,6 +100,14 @@ def main():
     
     # performance tests
     num_rep=1
+    
+    smallDataMI = partial(greedy_search,mutual_information_plugin,data)
+    print(timeit(smallDataMI, number=num_rep)/num_rep)
+    
+    biggerBiggerDataUpMI = partial(greedy_search, mutual_information_plugin,biggerBiggerData)
+    print(timeit(biggerBiggerDataUpMI, number=num_rep)/num_rep)
+    
+    
     smallDataUpFI = partial(greedy_search, fraction_of_information_permutation_upper_bound,data)
     print(timeit(smallDataUpFI, number=num_rep)/num_rep)
     

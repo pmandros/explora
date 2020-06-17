@@ -9,6 +9,7 @@ Created on Sat Jun 13 14:28:55 2020
 import pandas as pd
 import numpy as np
 
+
 def make_single_column(X):
     """ Combines multiple columns into one with resulting domain the distinct JOINT values of the input columns"""
     if isinstance(X, pd.DataFrame):
@@ -27,34 +28,57 @@ def make_single_column(X):
         return X;
     
     
-def choose(n, k):
-    """
-    A fast way to calculate binomial coefficients by Andrew Dalke (contrib). But it overflows
-    """
-    if 0 <= k <= n:
-        ntok = 1
-        ktok = 1
-        for t in range(1, min(k, n - k) + 1):
-            ntok *= n
-            ktok *= t
-            n -= 1
-        return ntok // ktok
-    else:
-        return 0
+def to_numpy_if_not(X):
+    """ Returns the numpy representation if dataframe"""
+    if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):  
+        X=X.to_numpy();
+    return X
     
-def choose_no_overflow(n,r):
-  """
-  Computes n! / (r! (n-r)!) exactly. Returns a python long int. For some reason it doesnt overflow
-  """
-  assert n >= 0
-  assert 0 <= r <= n
+    
+def return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,with_cross_tab=False,contingency_table=None):
+    """
+    Returns the size, and the marginal counts of X, Y, and XY(optionally)"""
+     
+    if contingency_table!=None:        
+        contingency_table=to_numpy_if_not(contingency_table);
+        size=contingency_table[-1,-1];
+        marginal_counts_Y=contingency_table[-1,:-1];
+        marginal_counts_X=contingency_table[:-1,-1];     
+        if return_joint_counts:
+            joint_counts=contingency_table[:-1,:-1].flatten();        
+    else:
+        if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):  
+            X=X.to_numpy();
+        
+        if isinstance(Y, pd.Series) or isinstance(Y, pd.DataFrame):  
+            Y=Y.to_numpy();
+        
+        X=make_single_column(X);
+        Y=make_single_column(Y);
+        
+        if with_cross_tab==True:         
+            contingency_table=pd.crosstab(X,Y,margins = True);
 
-  c = 1
-  denom = 1
-  for (num,denom) in zip(range(n,n-r,-1), range(1,r+1,1)):
-    c = (c * num) // denom
-  return c
+            contingency_table=to_numpy_if_not(contingency_table);
+            size=contingency_table[-1,-1];
+            marginal_counts_Y=contingency_table[-1,:-1];
+            marginal_counts_X=contingency_table[:-1,-1];
+            if return_joint_counts:
+                joint_counts=contingency_table[:-1,:-1].flatten();
+        else:
+            size=np.size(X,0);
+            marginal_counts_X=np.unique(X, return_counts=True, axis=0)[1];
+            marginal_counts_Y=np.unique(Y, return_counts=True, axis=0)[1]; 
+            if return_joint_counts:
+                XY=np.column_stack((X,Y));
+                joint_counts=np.unique(XY, return_counts=True, axis=0)[1];
+                
+    if return_joint_counts:
+        return size, marginal_counts_X, marginal_counts_Y, joint_counts
+    else:
+        return size, marginal_counts_X, marginal_counts_Y
 
 
-def hypergeometric_pmf(k,n,a,b):
-    return choose_no_overflow(a, k) * choose_no_overflow(n - a, b - k) / choose_no_overflow(n, b)
+
+    
+

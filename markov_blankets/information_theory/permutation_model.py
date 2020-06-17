@@ -11,52 +11,35 @@ from functools import partial
 from itertools import product
 from multiprocessing import Pool
 from timeit import timeit
+from utilities.tools import make_single_column, to_numpy_if_not, return_size_and_counts_of_contingency_table
+from some_statistics.basic_statistics import choose,hypergeometric_pmf
 
 import numba as nb
 import numpy as np
 import pandas as pd
 
 
-@nb.jit(nopython=True)
-def choose(n, r):
+def expected__mutual_information_permutation_model_upper_bound(X,Y,with_cross_tab=False,contingency_table=None):
     """
-    Computes n! / (r! (n-r)!) exactly. Returns a python int. For some reason it doesnt overflow
+    Computes an upper-bound (Nguyen et al. 2010) to the expected value of mutual 
+    information under the permutation model. Can be computed using Pandas cross_tab, or with a 
+    precomputed contingency table"""
+     
+    size,marginal_counts_X,marginal_counts_Y=return_size_and_counts_of_contingency_table(X,Y,with_cross_tab,contingency_table)
+    domain_size_X=len(marginal_counts_X)
+    domain_size_Y=len(marginal_counts_Y)
+
+        
+    return np.log2((size+domain_size_X*domain_size_Y-domain_size_X-domain_size_Y)/(size-1))
+
+
+def expected_mutual_information_permutation_model(X, Y, with_cross_tab=False,contingency_table=None, num_threads=1):
     """
-    assert 0 <= r <= n
-
-    c = 1
-    for num, denom in zip(range(n, n - r, -1), range(1, r + 1, 1)):
-        c = (c * num) // denom
-    return c
-
-
-@nb.jit(nopython=True)
-def hypergeometric_pmf(k, n, a, b):
-    return choose(a, k) * choose(n - a, b - k) / choose(n, b)
-
-
-def expected_mutual_information_permutation_model(
-    X, Y, contingency_table=None, num_threads=1
-):
-    if contingency_table is None:
-        X = concatenate_attributes(X)
-        Y = concatenate_attributes(Y)
-
-        if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):
-            X_marginal_counts = X.value_counts()
-            Y_marginal_counts = Y.value_counts()
-
-            num_samples = len(X.index)
-        elif isinstance(X, np.ndarray):
-            X_marginal_counts = np.unique(X, return_counts=True, axis=0)[1]
-            Y_marginal_counts = np.unique(Y, return_counts=True, axis=0)[1]
-
-            num_samples = np.size(X, 0)
-    else:
-        contingency_table = contingency_table.to_numpy()
-        num_samples = contingency_table[-1, -1]
-        Y_marginal_counts = contingency_table[-1, :-1]
-        X_marginal_counts = contingency_table[:-1, -1]
+    Computes the expected value of mutual information under the permutation model.
+    A precomputed contingency table can be provided. Can be done in parallel"""
+   
+    num_samples,X_marginal_counts,Y_marginal_counts=return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,
+                                                                                                with_cross_tab=with_cross_tab,contingency_table=contingency_table)
 
     if Y_marginal_counts[0] == num_samples or X_marginal_counts[0] == num_samples:
         return 0
@@ -145,8 +128,8 @@ if __name__ == "__main__":
     Y = np.array([1, 1, 2, 2, 3, 3])
 
     assert (
-        expected_mutual_information_permutation_model(Y, X)
-        == expected_mutual_information_permutation_model(Y, X, num_threads=4)
+        expected_mutual_information_permutation_model(X, Y)
+        == expected_mutual_information_permutation_model(X, Y, num_threads=4)
         == 0.7849625007211563
     )
 

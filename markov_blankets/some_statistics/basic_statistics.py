@@ -8,6 +8,8 @@ Created on Sat Jun 13 14:37:54 2020
 
 import pandas as pd
 import numpy as np
+import numba as nb
+
 from utilities import tools 
 
 def empirical_distribution_from_counts(counts,size=None):
@@ -37,3 +39,38 @@ def empirical_statistics(X):
         
     empirical_distribution=empirical_distribution_from_counts(counts)
     return empirical_distribution,len(counts),length;
+
+
+
+@nb.jit(nopython=True)
+def choose(n, r):
+    """
+    Computes n! / (r! (n-r)!) exactly. Returns a python int. For some reason it doesnt overflow
+    """
+    assert 0 <= r <= n
+
+    c = 1
+    for num, denom in zip(range(n, n - r, -1), range(1, r + 1, 1)):
+        c = (c * num) // denom
+    return c
+
+
+# def choose(n, k):
+#     """
+#     A fast way to calculate binomial coefficients by Andrew Dalke (contrib). But it overflows
+#     """
+#     if 0 <= k <= n:
+#         ntok = 1
+#         ktok = 1
+#         for t in range(1, min(k, n - k) + 1):
+#             ntok *= n
+#             ktok *= t
+#             n -= 1
+#         return ntok // ktok
+#     else:
+#         return 0
+
+
+@nb.jit(nopython=True)
+def hypergeometric_pmf(k, n, a, b):
+    return choose(a, k) * choose(n - a, b - k) / choose(n, b)
