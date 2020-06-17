@@ -8,12 +8,13 @@ Created on Mon May 25 19:45:52 2020
 
 import time
 from operator import itemgetter
-
+from functools import partial
 import numpy as np
 import pandas as pd
+from timeit import timeit
 
-from information_theory.estimators import mutual_information_permutation_upper_bound
-from information_theory.information_theory_basic import mutual_information_plugin
+from information_theory.estimators import mutual_information_permutation_upper_bound, fraction_of_information_permutation_upper_bound
+from information_theory.information_theory_basic import mutual_information_plugin, fraction_of_information_plugin
 
 
 def greedy_search(estimator, data, target=None, limit=None, prior_solution_set=None):
@@ -82,40 +83,31 @@ def main():
     biggerBiggerData=biggerData.append(biggerData).append(biggerData).append(biggerData).append(biggerData).append(biggerData)
     biggerBiggerData=biggerBiggerData.append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData)
 
-    # print(data.info())
-    # print(biggerBiggerData.info())
 
-    start_time=time.time()
-    [selected,bestScore]=greedy_search(mutual_information_plugin,data)
-    print("--- %s seconds for greedy search in small data with plugin MI ---" % (time.time() - start_time))
-    print(f' selected by plugin MI on small: {selected} with score {bestScore}')
-
-    start_time=time.time()
+    # test for upper-bound MI
     [selected,bestScore]=greedy_search(mutual_information_permutation_upper_bound,data)
-    print("--- %s seconds for greedy search in small data with upper-bound MI ---" % (time.time() - start_time))
-    print(f' selected by upper-bound MI on small: {selected} with score {bestScore}')
-    assert(0.28707781833145635==bestScore)
+    assert(0.28707781833145724==bestScore)
+    assert(selected=={0,4,8})
 
-    start_time=time.time()
-    [selected,bestScore]=greedy_search(mutual_information_plugin,data)
-    print("--- %s seconds for greedy search in small data with plugin FI ---" % (time.time() - start_time))
-    print(f' selected by plugin FI on small: {selected} with score {bestScore}')
-
-    start_time=time.time()
-    [selected,bestScore]=greedy_search(mutual_information_permutation_upper_bound,data)
-    print("--- %s seconds for greedy search in small data with upper-bound FI ---" % (time.time() - start_time))
+    # test for upper-bound FI
+    [selected,bestScore]=greedy_search(fraction_of_information_permutation_upper_bound,data)
     assert(0.3083695032958582==bestScore)
-    print(f' selected by upper-bound FI on small: {selected} with score {bestScore}')
+    
+    # test for upper-bound FI with limit 1
+    [selected,bestScore]=greedy_search(fraction_of_information_permutation_upper_bound,data, limit=1)
+    assert(selected=={4})
 
-    # start_time=time.time()
-    # [selected,bestScore]=greedy_search(mutual_information_plugin,biggerBiggerData)
-    # print("--- %s seconds for greedy search in big data with plugin FI ---" % (time.time() - start_time))
-    # print(f' selected by plugin FI on big: {selected}')
+    
+    # performance tests
+    num_rep=1
+    smallDataUpFI = partial(greedy_search, fraction_of_information_permutation_upper_bound,data)
+    print(timeit(smallDataUpFI, number=num_rep)/num_rep)
+    
+    biggerBiggerDataUpFI = partial(greedy_search, fraction_of_information_permutation_upper_bound,biggerBiggerData)
+    print(timeit(biggerBiggerDataUpFI, number=num_rep)/num_rep)
+    
 
-    # start_time=time.time()
-    # [selected,bestScore]=greedy_search(mutual_information_permutation_upper_bound,biggerBiggerData)
-    # print("--- %s seconds for greedy search in big data with upper-bound FI ---" % (time.time() - start_time))
-    # print(f' selected by upper-bound FI on big: {selected}')
+    
 
 
 if __name__ == "__main__":
