@@ -37,7 +37,7 @@ def to_numpy_if_not(X):
     
 def return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,with_cross_tab=False,contingency_table=None):
     """
-    Returns the size, and the marginal counts of X, Y, and XY(optionally)"""
+    Returns the size, and the marginal counts of X, Y, and XY (optionally)"""
      
     if contingency_table!=None:        
         contingency_table=to_numpy_if_not(contingency_table);

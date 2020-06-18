@@ -9,6 +9,7 @@ Created on Sat Jun 13 14:37:54 2020
 import pandas as pd
 import numpy as np
 import numba as nb
+import math
 from scipy.stats import hypergeom
 from utilities.tools import make_single_column
 
@@ -51,26 +52,38 @@ def choose(n, r):
 
     c = 1
     for num, denom in zip(range(n, n - r, -1), range(1, r + 1, 1)):
-        c = (c * num) // denom
+        c = (c * num) / denom
     return c
 
 @nb.jit(nopython=True)
 def hypergeometric_pmf(k, n, a, b):
-    return choose(a, k) * choose(n - a, b - k) / choose(n, b)
-
-
+    """
+    Computes the hypergeometric pmf. Currently works with custom choose, and needs
+    a check if numbers are infinity
+    """
+    choose_1=choose(a, k)
+    choose_2=choose(n - a, b - k)
+    choose_3=choose(n, b)
+    if (not math.isinf(choose_1)) and (not math.isinf(choose_2)) and (not math.isinf(choose_3)):
+        return choose(a, k) * choose(n - a, b - k) / choose(n, b)
+    else:
+        return 0
 
     
 def main():
+    
+    # test 1
     M=958
     n=458
     N=332
     x = 2
-
+    custom_prob=hypergeometric_pmf(2,958,458,332)
     rv = hypergeom(M, n, N)
+    pro_prob=rv.pmf(x)
+    np.testing.assert_allclose(custom_prob, pro_prob, rtol=1e-5, atol=0)
 
-    print(hypergeometric_pmf(2,958,458,332))
-    print(rv.pmf(x))
+
+    
 
 
 

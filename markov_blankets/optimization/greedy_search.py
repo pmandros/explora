@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from timeit import timeit
 
-from information_theory.estimators import mutual_information_permutation_upper_bound, fraction_of_information_permutation_upper_bound
+from information_theory.estimators import mutual_information_permutation_upper_bound, fraction_of_information_permutation_upper_bound, fraction_of_information_permutation
 from information_theory.information_theory_basic import mutual_information_plugin, fraction_of_information_plugin
 
 
@@ -93,26 +93,43 @@ def main():
     [selected,bestScore]=greedy_search(fraction_of_information_permutation_upper_bound,data)
     assert(0.3083695032958582==bestScore)
     
-    # test for upper-bound FI with limit 1
-    [selected,bestScore]=greedy_search(fraction_of_information_permutation_upper_bound,data, limit=1)
-    assert(selected=={4})
+    # test for permutation corrected FI
+    [selected,bestScore]=greedy_search(fraction_of_information_permutation_upper_bound,data)
+    assert(0.3083695032958582==bestScore)
+    
+    # test for upper-bound FI 
+    [selected,bestScore]=greedy_search(fraction_of_information_permutation,data)
+    assert(bestScore==0.4447970033469623)   
+    assert(selected=={0,4,8, 2,6})
+
+    
 
     
     # performance tests
     num_rep=1
-    
+ 
+    # plugin MI
     smallDataMI = partial(greedy_search,mutual_information_plugin,data)
-    print(timeit(smallDataMI, number=num_rep)/num_rep)
+    print(timeit(smallDataMI, number=num_rep)/num_rep, "Small data plugin MI")
     
     biggerBiggerDataUpMI = partial(greedy_search, mutual_information_plugin,biggerBiggerData)
-    print(timeit(biggerBiggerDataUpMI, number=num_rep)/num_rep)
+    print(timeit(biggerBiggerDataUpMI, number=num_rep)/num_rep,"Big data plugin MI")
+    
+    #  upper bound MI
+    smallDataUpFI = partial(greedy_search, mutual_information_permutation_upper_bound,data)
+    print(timeit(smallDataUpFI, number=num_rep)/num_rep,"Small data upper-bound MI")
+    
+    biggerBiggerDataUpFI = partial(greedy_search, mutual_information_permutation_upper_bound,biggerBiggerData)
+    print(timeit(biggerBiggerDataUpFI, number=num_rep)/num_rep,"Big data upper-bound MI")
+    
+    # corrected FI
+    smallDataUpFI = partial(greedy_search, fraction_of_information_permutation,data)
+    print(timeit(smallDataUpFI, number=num_rep)/num_rep,"Small data corrected FI")
+    
+    biggerBiggerDataUpFI = partial(greedy_search, fraction_of_information_permutation,biggerBiggerData)
+    print(timeit(biggerBiggerDataUpFI, number=num_rep)/num_rep,"Big data corrected FI")
     
     
-    smallDataUpFI = partial(greedy_search, fraction_of_information_permutation_upper_bound,data)
-    print(timeit(smallDataUpFI, number=num_rep)/num_rep)
-    
-    biggerBiggerDataUpFI = partial(greedy_search, fraction_of_information_permutation_upper_bound,biggerBiggerData)
-    print(timeit(biggerBiggerDataUpFI, number=num_rep)/num_rep)
     
 
     

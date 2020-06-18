@@ -15,7 +15,8 @@ from  utilities.tools import make_single_column, return_size_and_counts_of_conti
 
 def entropy(prob_vector):
     """
-    Computes the Shannon entropy of an attribute   """
+    Computes the Shannon entropy of a probability distribution corresponding to
+    a random variable"""
     return sc.entropy(prob_vector,base=2);
 
 
@@ -80,16 +81,7 @@ def fraction_of_information_plugin(X,Y,with_cross_tab=False,contingency_table=No
         entropyXY=entropy_plugin(dataXY);
         return (entropyX + entropy_Y- entropyXY)/entropy_Y
     
-def mutual_information_from_cross_tab(X,Y,contingency_table=None):
-    """
-    Computes mutual information using cross_tab from pandas. A precomputed 
-    contingency table can be provided if it is available """
-    size,marginal_counts_X,marginal_counts_Y, joint_counts=return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=True,
-                                                                                                       with_cross_tab=True,contingency_table=contingency_table)
-
-    return entropy(marginal_counts_X/size) + entropy(marginal_counts_Y/size)- entropy(joint_counts/size)
-                
-
+    
 def conditional_entropy_plugin(Z,Y):
     """
     The plugin estimator for the conditional entropy H(Y|Z) of Y given Z"""
@@ -114,7 +106,16 @@ def conditional_entropy_plugin(Z,Y):
         conditional_entropy_plugin=conditional_entropy_plugin+valueCount/length*entropyTempY;      
     return conditional_entropy_plugin;  
     
-def fraction_of_information_from_cross_tab(X,Y,contingency_table=[],entropy_Y=None):
+def mutual_information_from_cross_tab(X,Y,contingency_table=None):
+    """
+    Computes mutual information using cross_tab from pandas. A precomputed 
+    contingency table can be provided if it is available """
+    size,marginal_counts_X,marginal_counts_Y, joint_counts=return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=True,
+                                                                                                       with_cross_tab=True,contingency_table=contingency_table)
+
+    return entropy(marginal_counts_X/size) + entropy(marginal_counts_Y/size)- entropy(joint_counts/size)
+                    
+def fraction_of_information_from_cross_tab(X,Y,contingency_table=None,entropy_Y=None):
     """
     Computes fraction of information using cross_tab from pandas. A precomputed 
     contingency table can be provided if it is available """
@@ -148,7 +149,7 @@ def main():
     assert(fracInfo== 0.6148658347844208)
 
     bigSize=biggerBiggerData.size
-    print(f'Number of rows in big data is: {bigSize}')
+    print(f'Now moving to the big data with mumber of rows: {bigSize}')
     start_time_pandas_cross_tab = time.time();  
     mutInfoCrossTab=mutual_information_plugin(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=True )
     print("--- %s seconds for MI calcualtion big data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))

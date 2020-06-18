@@ -8,9 +8,8 @@ Created on Sat Jun 13 15:13:25 2020
 
 import pandas as pd;
 import numpy as np;
-import scipy.stats as sc;
 import time
-from information_theory.information_theory_basic import mutual_information_plugin, entropy_plugin, fraction_of_information_plugin
+from information_theory.information_theory_basic import mutual_information_plugin, entropy_plugin
 from permutation_model import expected__mutual_information_permutation_model_upper_bound, expected_mutual_information_permutation_model
 
 from utilities.tools import make_single_column
@@ -135,87 +134,76 @@ def main():
     biggerBiggerData=biggerBiggerData.append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData)
      
     
-    
-    # # test 1
-    # start_time_pandas_cross_tab = time.time();  
-    # mutInfoCrossTab=mutual_information_permutation_upper_bound(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=True )
-    # print("--- %s seconds for upper-bound MI calcualtion small data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))
-
-
-    # start_time_numpy = time.time();   
-    # mutInfoNumpy=mutual_information_permutation_upper_bound(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=False )
-    # print("--- %s seconds for upper-bound MI calcualtion small data in numpy ---" % (time.time() - start_time_numpy))
-
-    # assert(mutInfoCrossTab==mutInfoNumpy==0.3301286715561232)
-    
-    
-    # start_time_numpy = time.time();  
-    # fracInfo=fraction_of_information_permutation_upper_bound(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=False )
-    # print("--- %s seconds for upper bound FI calcualtion small data numpy ---" % (time.time() - start_time_numpy))
-    # # assert(fracInfo== 0.6148658347844208)
-    # assert(fracInfo==0.3546133068140572)
-    
-    
-
-    # start_time_pandas_cross_tab = time.time();  
-    # mutInfoCrossTab=mutual_information_permutation_upper_bound(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=True )
-    # print("--- %s seconds for upper-bound MI calcualtion big data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))
-
-
-    # start_time_numpy = time.time();   
-    # mutInfoNumpy=mutual_information_permutation_upper_bound(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=False )
-    # print("--- %s seconds for upper-bound MI calcualtion big data in numpy ---" % (time.time() - start_time_numpy))
-    # assert(mutInfoCrossTab==mutInfoNumpy)
-
-    
-    
-    # start_time_numpy = time.time();  
-    # fracInfo=fraction_of_information_permutation_upper_bound(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=False )
-    # print("--- %s seconds for upper bound FI calcualtion big data numpy ---" % (time.time() - start_time_numpy))
-    
-    
-    # test 2
+    print(f'Testing permutation upper-bound')
+    # test 1 with permutation upper-bound correction
     start_time_pandas_cross_tab = time.time();  
-    mutInfoCrossTab=expected_mutual_information_permutation_model(data.iloc[:,[4]],data.iloc[:,9],with_cross_tab=False )
-    print("--- %s seconds for permutation expected MI calcualtion small data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))
-    print(mutInfoCrossTab)
-    
-    # start_time_pandas_cross_tab = time.time();  
-    # mutInfoCrossTab=mutual_information_permutation(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=True )
-    # print("--- %s seconds for permutation MI calcualtion small data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))
-    # print(mutInfoCrossTab)
-
-    # start_time_numpy = time.time();   
-    # mutInfoNumpy=mutual_information_permutation(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=False )
-    # print("--- %s seconds for permutation MI calcualtion small data in numpy ---" % (time.time() - start_time_numpy))
-    # print(mutInfoNumpy)
-
-    # # assert(mutInfoCrossTab==mutInfoNumpy==0.3301286715561232)
-    
-    
-    # start_time_numpy = time.time();  
-    # fracInfo=fraction_of_information_permutation(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=False )
-    # print("--- %s seconds for permutation FI calcualtion small data numpy ---" % (time.time() - start_time_numpy))
-    # # assert(fracInfo== 0.6148658347844208)
-    # # assert(fracInfo==0.3546133068140572)
-    
-    
-
-    # start_time_pandas_cross_tab = time.time();  
-    # mutInfoCrossTab=mutual_information_permutation(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=True )
-    # print("--- %s seconds for permutation MI calcualtion big data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))
+    mutInfoCrossTab=mutual_information_permutation_upper_bound(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=True )
+    print("--- %s seconds for upper-bound MI calcualtion small data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))
 
 
-    # start_time_numpy = time.time();   
-    # mutInfoNumpy=mutual_information_permutation(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=False )
-    # print("--- %s seconds for permutation MI calcualtion big data in numpy ---" % (time.time() - start_time_numpy))
-    # # assert(mutInfoCrossTab==mutInfoNumpy)
+    start_time_numpy = time.time();   
+    mutInfoNumpy=mutual_information_permutation_upper_bound(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=False )
+    print("--- %s seconds for upper-bound MI calcualtion small data in numpy ---" % (time.time() - start_time_numpy))
+    assert(mutInfoCrossTab==mutInfoNumpy==0.3301286715561232)
+    
+    
+    start_time_numpy = time.time();  
+    fracInfo=fraction_of_information_permutation_upper_bound(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=False )
+    print("--- %s seconds for upper bound FI calcualtion small data numpy ---" % (time.time() - start_time_numpy))
+    assert(fracInfo==0.3546133068140572)
+    
+    
+    bigSize=biggerBiggerData.size
+    print(f'  Now moving to the big data with mumber of rows: {bigSize}')
+    start_time_pandas_cross_tab = time.time();  
+    mutInfoCrossTab=mutual_information_permutation_upper_bound(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=True )
+    print("--- %s seconds for upper-bound MI calcualtion big data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))
+
+
+    start_time_numpy = time.time();   
+    mutInfoNumpy=mutual_information_permutation_upper_bound(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=False )
+    print("--- %s seconds for upper-bound MI calcualtion big data in numpy ---" % (time.time() - start_time_numpy))
+    assert(mutInfoCrossTab==mutInfoNumpy)
 
     
     
-    # start_time_numpy = time.time();  
-    # fracInfo=fraction_of_information_permutation(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=False )
-    # print("--- %s seconds for permutation FI calcualtion big data numpy ---" % (time.time() - start_time_numpy))
+    start_time_numpy = time.time();  
+    fracInfo=fraction_of_information_permutation_upper_bound(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=False )
+    print("--- %s seconds for upper bound FI calcualtion big data numpy ---" % (time.time() - start_time_numpy))
+    
+    print(f'Now moving to testing permutation correction')
+    # test 2 with permutation correction
+    start_time_pandas_cross_tab = time.time();  
+    mutInfoCrossTab=mutual_information_permutation(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=True )
+    print("--- %s seconds for permutation MI calcualtion small data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))
+
+    start_time_numpy = time.time();   
+    mutInfoNumpy=mutual_information_permutation(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=False )
+    print("--- %s seconds for permutation MI calcualtion small data in numpy ---" % (time.time() - start_time_numpy))
+    assert(mutInfoCrossTab==mutInfoNumpy==0.41408554333826497)
+    
+    
+    start_time_numpy = time.time();  
+    fracInfo=fraction_of_information_permutation(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=False )
+    print("--- %s seconds for permutation FI calcualtion small data numpy ---" % (time.time() - start_time_numpy))
+    assert(fracInfo==0.4447970033469641)
+
+    
+    bigSize=biggerBiggerData.size
+    print(f'  Now moving to the big data with mumber of rows: {bigSize}')
+    start_time_pandas_cross_tab = time.time();  
+    mutInfoCrossTab=mutual_information_permutation(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=True )
+    print("--- %s seconds for permutation MI calcualtion big data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))
+
+    start_time_numpy = time.time();   
+    mutInfoNumpy=mutual_information_permutation(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=False )
+    print("--- %s seconds for permutation MI calcualtion big data in numpy ---" % (time.time() - start_time_numpy))
+
+    assert(mutInfoCrossTab==mutInfoNumpy)
+     
+    start_time_numpy = time.time();  
+    fracInfo=fraction_of_information_permutation(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=False )
+    print("--- %s seconds for permutation FI calcualtion big data numpy ---" % (time.time() - start_time_numpy))
     
     
     

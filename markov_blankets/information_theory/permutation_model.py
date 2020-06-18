@@ -11,9 +11,9 @@ from functools import partial
 from itertools import product
 from multiprocessing import Pool
 from timeit import timeit
-from utilities.tools import make_single_column, to_numpy_if_not, return_size_and_counts_of_contingency_table
-from some_statistics.basic_statistics import choose,hypergeometric_pmf
-
+from utilities.tools import return_size_and_counts_of_contingency_table
+from some_statistics.basic_statistics import hypergeometric_pmf
+import time
 import numba as nb
 import numpy as np
 import pandas as pd
@@ -40,8 +40,6 @@ def expected_mutual_information_permutation_model(X, Y, with_cross_tab=False,con
     num_samples,X_marginal_counts,Y_marginal_counts=return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,
                                                                                                 with_cross_tab=with_cross_tab,contingency_table=contingency_table)
     
-   
-
     if Y_marginal_counts[0] == num_samples or X_marginal_counts[0] == num_samples:
         return 0
 
@@ -66,18 +64,15 @@ def cell_total_contribution_custom(cell_marginals, num_samples):
 
     min_iterator = max(1, marginal_count_one + marginal_count_two - num_samples)
     max_iterator = min(marginal_count_one, marginal_count_two)
-
-
+    
     prob = hypergeometric_pmf(
         min_iterator, num_samples, marginal_count_one, marginal_count_two
     )
     
-
     cell_contribution = prob * mutual_information_plugin_cell_contribution(
         min_iterator, num_samples, marginal_count_one, marginal_count_two
     )
     possible_values = np.arange(min_iterator + 1, max_iterator + 1)
-
     for value in possible_values:
         temp_one = prob * (
             (marginal_count_one - (value - 1)) * (marginal_count_two - (value - 1))
@@ -89,7 +84,6 @@ def cell_total_contribution_custom(cell_marginals, num_samples):
         cell_contribution += prob * mutual_information_plugin_cell_contribution(
             value, num_samples, marginal_count_one, marginal_count_two
         )
-
     return cell_contribution
 
 
@@ -98,17 +92,20 @@ def mutual_information_plugin_cell_contribution(
     cell_count, num_samples, marginal_count_one, marginal_count_two
 ):
     if cell_count == 0:
-        return 0
+        cont= 0
     else:
         first_part = cell_count / num_samples
         second_part = math.log(
             num_samples * cell_count / (marginal_count_one * marginal_count_two)
         ) / math.log(2)
-        return first_part * second_part
+        cont= first_part * second_part
+    # print("cell cont: ",cont)
+    return cont
 
 
-
-if __name__ == "__main__":
+def main():
+   
+    # test 1 permutation model
     X = np.array([1, 1, 2, 2, 3, 3])
     Y = np.array([1, 1, 2, 2, 3, 3])
 
@@ -118,17 +115,48 @@ if __name__ == "__main__":
         == 0.7849625007211563
     )
 
+    # test 2 (performance) permutation model
     X = np.random.randint(100, size=(10000, 1))
     Y = np.random.randint(100, size=(10000, 1))
-
+    
     num_rep = 5
-
+    
     single = partial(expected_mutual_information_permutation_model, X, Y)
-    print(timeit(single, number=num_rep) / num_rep)
+    print(timeit(single, number=num_rep) / num_rep, " seconds for single thread")
 
     parallel = partial(
         expected_mutual_information_permutation_model, X, Y, num_threads=4
     )
-    print(timeit(parallel, number=num_rep) / num_rep)
-
+    print(timeit(parallel, number=num_rep) / num_rep, " seconds for multi threading (4)")
+    
     assert single() == parallel()
+    
+    
+    # test 3 permutation model on real data
+    data = pd.read_csv("../datasets/tic_tac_toe.csv");
+    emi=expected_mutual_information_permutation_model(data.iloc[:,4],data.iloc[:,9])
+    assert(emi==0.0015104057711462328)
+    emi=expected_mutual_information_permutation_model(data.iloc[:,[0,2,4,6,8]],data.iloc[:,9])
+    assert(emi==0.158326256563715)
+    
+    # # test 4 permutation model upper-bound on real data
+    data = pd.read_csv("../datasets/tic_tac_toe.csv");
+    emi=expected__mutual_information_permutation_model_upper_bound(data.iloc[:,4],data.iloc[:,9])
+    assert(emi==0.003011890532105174)
+    emi=expected__mutual_information_permutation_model_upper_bound(data.iloc[:,[0,2,4,6,8]],data.iloc[:,9])
+    assert(emi==0.2422831283458568)
+    
+    # test 5 permutation model on real big data (should give 0)
+    data = pd.read_csv("../datasets/tic_tac_toe.csv");
+    biggerData=data.append(data).append(data).append(data).append(data).append(data).append(data)
+    biggerBiggerData=biggerData.append(biggerData).append(biggerData).append(biggerData).append(biggerData).append(biggerData)
+    biggerBiggerData=biggerBiggerData.append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData) 
+    emi=expected_mutual_information_permutation_model(biggerBiggerData.iloc[:,4],biggerBiggerData.iloc[:,9])
+    assert(emi==0)
+    
+    
+
+
+
+if __name__ == "__main__":
+    main()
