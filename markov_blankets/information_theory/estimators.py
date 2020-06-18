@@ -90,6 +90,31 @@ def fraction_of_information_permutation_upper_bound(X,Y,with_cross_tab=False,con
         entropy_Y=entropy_plugin(Y)    
     return corMi/entropy_Y; 
 
+
+def conditional_fraction_of_information_permutation(X,Y,Z):
+    """
+    The plugin estimator for the conditional fraction of information F(X;Y|Z) between two attribute sets X 
+    and Y,  given Z, and corrected with an upper bound of the permutation nodel."""
+    if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):
+        X=X.to_numpy();
+        Y=Y.to_numpy();
+        Z=Z.to_numpy();
+        
+    Z=make_single_column(Z);
+    Y=make_single_column(Y);
+    X=make_single_column(X);
+   
+    length=np.size(X,0);
+    condEntropy=conditional_entropy_permutation(Z,Y);
+
+    uniqueValuesZ=np.unique(Z);
+    indices=[np.where(Z == value)[0] for value in uniqueValuesZ]
+
+    probs=[len(valueIndices)/length for valueIndices in indices];
+    result=sum([probs[i]*mutual_information_permutation(X[indices[i]],Y[indices[i]] ) for i in range(len(uniqueValuesZ))   ])   
+    
+    return result/condEntropy;
+
 def conditional_fraction_of_information_permutation_upper_bound(X,Y,Z):
     """
     The plugin estimator for the conditional fraction of information F(X;Y|Z) between two attribute sets X 
@@ -126,13 +151,26 @@ def conditional_entropy_permutation_upper_bound(Z,Y):
     expectedMutual=expected__mutual_information_permutation_model_upper_bound(Z, Y);      
     return entropyY-expectedMutual;  
 
+def conditional_entropy_permutation(Z,Y):
+    """
+    The corrected estimator for the conditional entropy H(Y|Z), corrected with
+    the permutation nodel."""
+    if isinstance(Z, pd.Series) or isinstance(Z, pd.DataFrame):
+        Y=Y.to_numpy();
+        Z=Z.to_numpy();
+    
+    entropyY=entropy_plugin(Y);
+    expectedMutual=expected_mutual_information_permutation_model(Z, Y);      
+    return entropyY-expectedMutual;  
+
 
 def main():
     data = pd.read_csv("../datasets/tic_tac_toe.csv");
     biggerData=data.append(data).append(data).append(data).append(data).append(data).append(data)
     biggerBiggerData=biggerData.append(biggerData).append(biggerData).append(biggerData).append(biggerData).append(biggerData)
     biggerBiggerData=biggerBiggerData.append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData)
-     
+    bigSize=biggerBiggerData.size
+
     
     print(f'Testing permutation upper-bound')
     # test 1 with permutation upper-bound correction
@@ -153,7 +191,6 @@ def main():
     assert(fracInfo==0.3546133068140572)
     
     
-    bigSize=biggerBiggerData.size
     print(f'  Now moving to the big data with mumber of rows: {bigSize}')
     start_time_pandas_cross_tab = time.time();  
     mutInfoCrossTab=mutual_information_permutation_upper_bound(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=True )
@@ -171,7 +208,7 @@ def main():
     fracInfo=fraction_of_information_permutation_upper_bound(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=False )
     print("--- %s seconds for upper bound FI calcualtion big data numpy ---" % (time.time() - start_time_numpy))
     
-    print(f'Now moving to testing permutation correction')
+    print(f'Testing permutation ')
     # test 2 with permutation correction
     start_time_pandas_cross_tab = time.time();  
     mutInfoCrossTab=mutual_information_permutation(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=True )
@@ -189,7 +226,6 @@ def main():
     assert(fracInfo==0.4447970033469641)
 
     
-    bigSize=biggerBiggerData.size
     print(f'  Now moving to the big data with mumber of rows: {bigSize}')
     start_time_pandas_cross_tab = time.time();  
     mutInfoCrossTab=mutual_information_permutation(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=True )
@@ -205,16 +241,18 @@ def main():
     fracInfo=fraction_of_information_permutation(biggerBiggerData.iloc[:,[0, 2,4,6,8]],biggerBiggerData.iloc[:,9],with_cross_tab=False )
     print("--- %s seconds for permutation FI calcualtion big data numpy ---" % (time.time() - start_time_numpy))
     
+    print(f'Testing conditional permutation FI')
+    # test 3 with conditional permutation correction
+    start_time= time.time();  
+    condFrac=conditional_fraction_of_information_permutation(data.iloc[:,[0, 2,6,8]],data.iloc[:,9],data.iloc[:,4])
+    print("--- %s seconds for conditional corrected calcualtion small data with numpy ---" % (time.time() - start_time))
+    assert(condFrac==0.35614476368567044)
     
+    print(f'  Now moving to the big data with mumber of rows: {bigSize}')
+    start_time= time.time();  
+    condFrac=conditional_fraction_of_information_permutation(biggerBiggerData.iloc[:,[0, 2,6,8]],biggerBiggerData.iloc[:,9],biggerBiggerData.iloc[:,4])
+    print("--- %s seconds for conditional corrected calcualtion big data with numpy ---" % (time.time() - start_time))
     
-    
-    
-
-    
-    
-    
-
-
 
 if __name__ == '__main__':
     main()   
