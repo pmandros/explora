@@ -13,7 +13,7 @@ import pandas as pd
 from optimization.greedy_search import greedy_search
 from algorithms.shrink import shrink
 import time
-from information_theory.estimators import fraction_of_information_permutation_upper_bound,conditional_fraction_of_information_permutation_upper_bound
+from information_theory.estimators import fraction_of_information_permutation_upper_bound,conditional_fraction_of_information_permutation_upper_bound, fraction_of_information_permutation, conditional_fraction_of_information_permutation
 
 
 def grow_shrink(grow_estimator,shrink_estimator, data,  shrink_threshold=0,target=None,limit=None):
@@ -30,12 +30,12 @@ def grow_shrink(grow_estimator,shrink_estimator, data,  shrink_threshold=0,targe
     if target==None:
         target=np.size(data,1);
 
-    start_time = time.time();  
+    # start_time = time.time();  
 
     [greedyResult,greedyScore]=greedy_search(grow_estimator,data,target,limit=limit);
     # print("--- %s Time for grow---" % (time.time() - start_time))
 
-    start_time = time.time();  
+    # start_time = time.time();  
 
     shrinkResults=shrink(shrink_estimator,greedyResult,data,shrink_threshold=shrink_threshold,target=None)
     # print("--- %s Time to shrink---" % (time.time() - start_time))
@@ -53,7 +53,7 @@ def main():
     # print(biggerBiggerData.info())
     
     
-    
+    # checking with upper-bound FI
     selected=grow_shrink(fraction_of_information_permutation_upper_bound,
                          conditional_fraction_of_information_permutation_upper_bound,
                          data.to_numpy(),shrink_threshold=0)
@@ -64,6 +64,22 @@ def main():
                          data.to_numpy(),shrink_threshold=0.21)
     assert(selected=={4})
     
+    
+    # checking with upper-bound FI
+    selected=grow_shrink(fraction_of_information_permutation,
+                         conditional_fraction_of_information_permutation,
+                         data.to_numpy(),shrink_threshold=0)
+    assert(selected=={4,0,8,2,6})
+    
+    selected=grow_shrink(fraction_of_information_permutation,
+                         conditional_fraction_of_information_permutation,
+                         data.to_numpy(),shrink_threshold=0.2)
+    assert(selected=={4,2,6})
+    
+    
+    
+    
+    # performance with upper-bound corrected FI
     start_time=time.time()
     selected=grow_shrink(fraction_of_information_permutation_upper_bound,
                          conditional_fraction_of_information_permutation_upper_bound,
