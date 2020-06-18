@@ -16,6 +16,7 @@ from permutation_model import expected__mutual_information_permutation_model_upp
 from utilities.tools import make_single_column
 
 
+
 def mutual_information_permutation(X,Y,with_cross_tab=False,contingency_table=None): 
     """
     The corrected estimator for mutual information I(X,Y) between two attribute sets X 
@@ -175,7 +176,7 @@ def main():
     
     # test 2
     start_time_pandas_cross_tab = time.time();  
-    mutInfoCrossTab=expected_mutual_information_permutation_model(data.iloc[:,[0, 2,4,6,8]],data.iloc[:,9],with_cross_tab=False )
+    mutInfoCrossTab=expected_mutual_information_permutation_model(data.iloc[:,[4]],data.iloc[:,9],with_cross_tab=False )
     print("--- %s seconds for permutation expected MI calcualtion small data with cross tab pandas ---" % (time.time() - start_time_pandas_cross_tab))
     print(mutInfoCrossTab)
     

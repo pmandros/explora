@@ -170,53 +170,5 @@ if __name__ == '__main__':
     
 
         
-    
-    
-
-
-
-
-# start_time_numpy = time.time();  
-
-# print(fraction_of_information_plugin(data.iloc[:,[0, 2,4,6,8]].to_numpy(),data.iloc[:,9].to_numpy(),with_cross_tab=with_cross_tab  ) )
-
-# print("--- %s seconds for   fraction MI calcualtion in numpy ---" % (time.time() - start_time_numpy))
-
-# start_time_numpy = time.time();  
-
-# print(fractionOfInformationPermutationUpperBounded(data.iloc[:,[0, 2,4,6,8]].to_numpy(),data.iloc[:,9].to_numpy(),with_cross_tab=with_cross_tab  ) )
-
-# print("--- %s seconds for corrected  fraction MI calcualtion in numpy ---" % (time.time() - start_time_numpy))
-
-# start_time_numpy = time.time();  
-
-# print(fractionOfInformationPermutationUpperBounded(bigData.iloc[:,[0, 2,4,6,8]],bigData.iloc[:,9],with_cross_tab=with_cross_tab  ) )
-
-# print("--- %s seconds for corrected  fraction MI calcualtion in big numpy ---" % (time.time() - start_time_numpy))
-
-# start_time_numpy = time.time();  
-# print(fractionOfInformationPermutationUpperBounded(veryBigData.iloc[:,[0, 2,4,6,8]],veryBigData.iloc[:,9],with_cross_tab=with_cross_tab  ) )
-
-# print("--- %s seconds for corrected  fraction MI calcualtion in very big numpy ---" % (time.time() - start_time_numpy))
-
-
-# start_time_numpy = time.time();  
-
-# print(conditionalFractionOfInformationPermutationUpperBounded(data.iloc[:,4],data.iloc[:,9],data.iloc[:,[0,8]] ) )
-
-# print("--- %s seconds for cond corrected  fraction MI calcualtion in numpy ---" % (time.time() - start_time_numpy))
-
-# start_time_numpy = time.time();  
-
-# print(conditionalFractionOfInformationPermutationUpperBounded(bigData.iloc[:,4],bigData.iloc[:,9],bigData.iloc[:,[0,8]] ) )
-
-# print("--- %s seconds for cond corrected  fraction MI calcualtion in big numpy ---" % (time.time() - start_time_numpy))
-
-
-# start_time_numpy = time.time();  
-# print(conditionalFractionOfInformationPermutationUpperBounded(veryBigData.iloc[:,4],veryBigData.iloc[:,9],veryBigData.iloc[:,[0,8]]  ) )
-
-# print("--- %s seconds for cond corrected  fraction MI calcualtion in very big numpy ---" % (time.time() - start_time_numpy))
-
 
 

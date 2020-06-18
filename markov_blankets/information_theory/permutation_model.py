@@ -18,7 +18,6 @@ import numba as nb
 import numpy as np
 import pandas as pd
 
-
 def expected__mutual_information_permutation_model_upper_bound(X,Y,with_cross_tab=False,contingency_table=None):
     """
     Computes an upper-bound (Nguyen et al. 2010) to the expected value of mutual 
@@ -40,6 +39,8 @@ def expected_mutual_information_permutation_model(X, Y, with_cross_tab=False,con
    
     num_samples,X_marginal_counts,Y_marginal_counts=return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,
                                                                                                 with_cross_tab=with_cross_tab,contingency_table=contingency_table)
+    
+   
 
     if Y_marginal_counts[0] == num_samples or X_marginal_counts[0] == num_samples:
         return 0
@@ -66,9 +67,12 @@ def cell_total_contribution_custom(cell_marginals, num_samples):
     min_iterator = max(1, marginal_count_one + marginal_count_two - num_samples)
     max_iterator = min(marginal_count_one, marginal_count_two)
 
+
     prob = hypergeometric_pmf(
         min_iterator, num_samples, marginal_count_one, marginal_count_two
     )
+    
+
     cell_contribution = prob * mutual_information_plugin_cell_contribution(
         min_iterator, num_samples, marginal_count_one, marginal_count_two
     )
@@ -102,25 +106,6 @@ def mutual_information_plugin_cell_contribution(
         ) / math.log(2)
         return first_part * second_part
 
-
-def concatenate_attributes(X):
-    """ Combines multiple columns into one. The values of the single column are
-    the distinct JOINT values from the multiple columns"""
-
-    if isinstance(X, pd.DataFrame):
-        num_columns = X.shape[1]
-        if num_columns > 1:
-            return X[X.columns].astype("str").agg("-".join, axis=1)
-        else:
-            return X
-    elif isinstance(X, np.ndarray):
-        num_columns = X.ndim
-        if num_columns > 1:
-            return np.unique(X, return_inverse=True, axis=0)[1]
-        else:
-            return X
-    elif isinstance(X, pd.Series):
-        return X
 
 
 if __name__ == "__main__":

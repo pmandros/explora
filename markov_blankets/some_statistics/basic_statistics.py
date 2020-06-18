@@ -9,8 +9,9 @@ Created on Sat Jun 13 14:37:54 2020
 import pandas as pd
 import numpy as np
 import numba as nb
+from scipy.stats import hypergeom
+from utilities.tools import make_single_column
 
-from utilities import tools 
 
 def empirical_distribution_from_counts(counts,size=None):
     """
@@ -29,7 +30,7 @@ def empirical_statistics(X):
     Returns the empirical distribution (a.k.a relative frequencies), counts,
     and size of an attribute
     """
-    X=tools.make_single_column(X);
+    X=make_single_column(X);
     if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):
         counts=X.value_counts();
         length=len(X.index)
@@ -39,7 +40,6 @@ def empirical_statistics(X):
         
     empirical_distribution=empirical_distribution_from_counts(counts)
     return empirical_distribution,len(counts),length;
-
 
 
 @nb.jit(nopython=True)
@@ -54,23 +54,25 @@ def choose(n, r):
         c = (c * num) // denom
     return c
 
-
-# def choose(n, k):
-#     """
-#     A fast way to calculate binomial coefficients by Andrew Dalke (contrib). But it overflows
-#     """
-#     if 0 <= k <= n:
-#         ntok = 1
-#         ktok = 1
-#         for t in range(1, min(k, n - k) + 1):
-#             ntok *= n
-#             ktok *= t
-#             n -= 1
-#         return ntok // ktok
-#     else:
-#         return 0
-
-
 @nb.jit(nopython=True)
 def hypergeometric_pmf(k, n, a, b):
     return choose(a, k) * choose(n - a, b - k) / choose(n, b)
+
+
+
+    
+def main():
+    M=958
+    n=458
+    N=332
+    x = 2
+
+    rv = hypergeom(M, n, N)
+
+    print(hypergeometric_pmf(2,958,458,332))
+    print(rv.pmf(x))
+
+
+
+if __name__ == '__main__':
+    main() 
