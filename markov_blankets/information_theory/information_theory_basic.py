@@ -11,7 +11,7 @@ import numpy as np;
 import scipy.stats as sc;
 import time
 from some_statistics.basic_statistics import empirical_statistics
-from  utilities.tools import make_single_column, return_size_and_counts_of_contingency_table
+from  utilities.tools import make_single_column, size_and_counts_of_contingency_table
 
 def entropy(prob_vector):
     """
@@ -110,7 +110,7 @@ def mutual_information_from_cross_tab(X,Y,contingency_table=None):
     """
     Computes mutual information using cross_tab from pandas. A precomputed 
     contingency table can be provided if it is available """
-    size,marginal_counts_X,marginal_counts_Y, joint_counts=return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=True,
+    size,marginal_counts_X,marginal_counts_Y, joint_counts=size_and_counts_of_contingency_table(X,Y,return_joint_counts=True,
                                                                                                        with_cross_tab=True,contingency_table=contingency_table)
 
     return entropy(marginal_counts_X/size) + entropy(marginal_counts_Y/size)- entropy(joint_counts/size)
@@ -119,7 +119,7 @@ def fraction_of_information_from_cross_tab(X,Y,contingency_table=None,entropy_Y=
     """
     Computes fraction of information using cross_tab from pandas. A precomputed 
     contingency table can be provided if it is available """
-    size,marginal_counts_X,marginal_counts_Y, joint_counts=return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=True,
+    size,marginal_counts_X,marginal_counts_Y, joint_counts=size_and_counts_of_contingency_table(X,Y,return_joint_counts=True,
                                                                                                        with_cross_tab=True,contingency_table=contingency_table)
     if entropy_Y==None:
             entropy_Y=entropy(marginal_counts_Y/size);

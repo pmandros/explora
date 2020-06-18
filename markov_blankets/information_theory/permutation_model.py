@@ -11,7 +11,7 @@ from functools import partial
 from itertools import product
 from multiprocessing import Pool
 from timeit import timeit
-from utilities.tools import return_size_and_counts_of_contingency_table
+from utilities.tools import size_and_counts_of_contingency_table
 from some_statistics.basic_statistics import hypergeometric_pmf
 import time
 import numba as nb
@@ -24,7 +24,7 @@ def expected__mutual_information_permutation_model_upper_bound(X,Y,with_cross_ta
     information under the permutation model. Can be computed using Pandas cross_tab, or with a 
     precomputed contingency table"""
      
-    size,marginal_counts_X,marginal_counts_Y=return_size_and_counts_of_contingency_table(X,Y,with_cross_tab,contingency_table)
+    size,marginal_counts_X,marginal_counts_Y=size_and_counts_of_contingency_table(X,Y,with_cross_tab,contingency_table)
     domain_size_X=len(marginal_counts_X)
     domain_size_Y=len(marginal_counts_Y)
 
@@ -37,7 +37,7 @@ def expected_mutual_information_permutation_model(X, Y, with_cross_tab=False,con
     Computes the expected value of mutual information under the permutation model.
     A precomputed contingency table can be provided. Can be done in parallel"""
    
-    num_samples,X_marginal_counts,Y_marginal_counts=return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,
+    num_samples,X_marginal_counts,Y_marginal_counts=size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,
                                                                                                 with_cross_tab=with_cross_tab,contingency_table=contingency_table)
     
     if Y_marginal_counts[0] == num_samples or X_marginal_counts[0] == num_samples:

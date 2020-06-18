@@ -35,7 +35,7 @@ def to_numpy_if_not(X):
     return X
     
     
-def return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,with_cross_tab=False,contingency_table=None):
+def size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,with_cross_tab=False,contingency_table=None):
     """
     Returns the size, and the marginal counts of X, Y, and XY (optionally)"""
      
@@ -77,7 +77,27 @@ def return_size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,wi
         return size, marginal_counts_X, marginal_counts_Y, joint_counts
     else:
         return size, marginal_counts_X, marginal_counts_Y
+    
+    
+def size_and_counts_of_attribute(X):
+    """
+    Returns the size, and the value counts of X"""            
+    X=make_single_column(X);
+    if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):
+        counts=X.value_counts();
+        length=len(X.index)
+    elif isinstance(X, np.ndarray):
+        counts=np.unique(X, return_counts=True,axis=0)[1];
+        length=np.size(X,0);
+             
+    return length, counts
+    
 
+
+def concatenate_columns():
+    """
+    Should concatenate arbritrary number of numpy arrays into one (column-wise)
+    like appending one to the other (similar but better to np.column_stack)"""
 
 
     

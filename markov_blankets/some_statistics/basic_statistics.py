@@ -11,7 +11,7 @@ import numpy as np
 import numba as nb
 import math
 from scipy.stats import hypergeom
-from utilities.tools import make_single_column
+from utilities.tools import size_and_counts_of_attribute
 
 
 def empirical_distribution_from_counts(counts,size=None):
@@ -31,14 +31,7 @@ def empirical_statistics(X):
     Returns the empirical distribution (a.k.a relative frequencies), counts,
     and size of an attribute
     """
-    X=make_single_column(X);
-    if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):
-        counts=X.value_counts();
-        length=len(X.index)
-    elif isinstance(X, np.ndarray):
-        counts=np.unique(X, return_counts=True,axis=0)[1];
-        length=np.size(X,0);
-        
+    length, counts= size_and_counts_of_attribute(X)      
     empirical_distribution=empirical_distribution_from_counts(counts)
     return empirical_distribution,len(counts),length;
 
