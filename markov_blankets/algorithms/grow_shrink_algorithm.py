@@ -3,11 +3,9 @@
 """
 Created on Tue May 26 03:34:55 2020
 
-@author: mbk-97-53
+@author: Panagiotis Mandros
 """
 
-import sys
-sys.path.append('..')
 import numpy as np;
 import pandas as pd
 from optimization.greedy_search import greedy_search
