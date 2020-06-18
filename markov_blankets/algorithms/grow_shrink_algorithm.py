@@ -93,29 +93,23 @@ def main():
     
     
 
-    # start_time=time.time()
-    # [selected,bestScore]=greedy_search(information_theory_basic.fraction_of_information_plugin,data)
-    # print("--- %s seconds for greedy search in small data with plugin FI ---" % (time.time() - start_time))
-    # print(f' selected by plugin FI on small: {selected} with score {bestScore}')
+    # performance with permutation corrected FI
+    start_time=time.time()
+    selected=grow_shrink(fraction_of_information_permutation,
+                         conditional_fraction_of_information_permutation,
+                         data.to_numpy(),shrink_threshold=0)
+    print("--- %s seconds for grow shrink with permutation F1 on small data---" % (time.time() - start_time))
     
-    # start_time=time.time()
-    # [selected,bestScore]=greedy_search(estimators.fraction_of_information_permutation_upper_bound,data)
-    # print("--- %s seconds for greedy search in small data with upper-bound FI ---" % (time.time() - start_time))
-    # assert(0.3083695032958582==bestScore)
-    # print(f' selected by upper-bound FI on small: {selected} with score {bestScore}')
+    start_time=time.time()
+    selected=grow_shrink(fraction_of_information_permutation,
+                         conditional_fraction_of_information_permutation,
+                         biggerBiggerData.to_numpy(),shrink_threshold=0)
+    print("--- %s seconds for grow shrink with permutation F1 on big data---" % (time.time() - start_time))
     
     
     
     
-    # start_time=time.time()
-    # [selected,bestScore]=greedy_search(information_theory_basic.fraction_of_information_plugin,biggerBiggerData)
-    # print("--- %s seconds for greedy search in big data with plugin FI ---" % (time.time() - start_time))
-    # print(f' selected by plugin FI on big: {selected}')
     
-    # start_time=time.time()
-    # [selected,bestScore]=greedy_search(estimators.fraction_of_information_permutation_upper_bound,biggerBiggerData)
-    # print("--- %s seconds for greedy search in big data with upper-bound FI ---" % (time.time() - start_time))
-    # print(f' selected by upper-bound FI on big: {selected}')
 
     
 
