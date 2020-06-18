@@ -44,7 +44,7 @@ def expected_mutual_information_permutation_model(X, Y, with_cross_tab=False,con
         return 0
 
     marginal_counts_cartesian_product = product(X_marginal_counts, Y_marginal_counts)
-    if True or num_threads == 1:
+    if num_threads == 1:
         expected_mutual_info = 0
         for cell_marginals in marginal_counts_cartesian_product:
             expected_mutual_info += cell_total_contribution_custom(
@@ -115,38 +115,54 @@ def main():
         == 0.7849625007211563
     )
 
-    # test 2 (performance) permutation model
+    # test 2 (performance) permutation model "small" input
     X = np.random.randint(100, size=(10000, 1))
     Y = np.random.randint(100, size=(10000, 1))
     
     num_rep = 5
     
     single = partial(expected_mutual_information_permutation_model, X, Y)
-    print(timeit(single, number=num_rep) / num_rep, " seconds for single thread")
+    print(timeit(single, number=num_rep) / num_rep, " seconds for single thread on small input")
 
     parallel = partial(
         expected_mutual_information_permutation_model, X, Y, num_threads=4
     )
-    print(timeit(parallel, number=num_rep) / num_rep, " seconds for multi threading (4)")
+    print(timeit(parallel, number=num_rep) / num_rep, " seconds for multi threading (4) on small input")
+    
+    assert single() == parallel()
+    
+    # test 3 (performance) permutation model "big" input
+    X = np.random.randint(1000, size=(100000, 1))
+    Y = np.random.randint(1000, size=(100000, 1))
+    
+    num_rep = 5
+    
+    single = partial(expected_mutual_information_permutation_model, X, Y)
+    print(timeit(single, number=num_rep) / num_rep, " seconds for single thread on big input")
+
+    parallel = partial(
+        expected_mutual_information_permutation_model, X, Y, num_threads=4
+    )
+    print(timeit(parallel, number=num_rep) / num_rep, " seconds for multi threading (4) on big input")
     
     assert single() == parallel()
     
     
-    # test 3 permutation model on real data
+    # test 4 permutation model on real data
     data = pd.read_csv("../datasets/tic_tac_toe.csv");
     emi=expected_mutual_information_permutation_model(data.iloc[:,4],data.iloc[:,9])
     assert(emi==0.0015104057711462328)
     emi=expected_mutual_information_permutation_model(data.iloc[:,[0,2,4,6,8]],data.iloc[:,9])
     assert(emi==0.158326256563715)
     
-    # # test 4 permutation model upper-bound on real data
+    # # test 5 permutation model upper-bound on real data
     data = pd.read_csv("../datasets/tic_tac_toe.csv");
     emi=expected__mutual_information_permutation_model_upper_bound(data.iloc[:,4],data.iloc[:,9])
     assert(emi==0.003011890532105174)
     emi=expected__mutual_information_permutation_model_upper_bound(data.iloc[:,[0,2,4,6,8]],data.iloc[:,9])
     assert(emi==0.2422831283458568)
     
-    # test 5 permutation model on real big data (should give 0)
+    # test 6 permutation model on real big data (should give 0)
     data = pd.read_csv("../datasets/tic_tac_toe.csv");
     biggerData=data.append(data).append(data).append(data).append(data).append(data).append(data)
     biggerBiggerData=biggerData.append(biggerData).append(biggerData).append(biggerData).append(biggerData).append(biggerData)
