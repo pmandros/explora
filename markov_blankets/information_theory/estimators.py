@@ -93,8 +93,8 @@ def fraction_of_information_permutation_upper_bound(X,Y,with_cross_tab=False,con
 
 def conditional_fraction_of_information_permutation(X,Y,Z):
     """
-    The plugin estimator for the conditional fraction of information F(X;Y|Z) between two attribute sets X 
-    and Y,  given Z, and corrected with an upper bound of the permutation nodel."""
+    The Mandros et al. (KDD'2017) corrected estimator for the conditional fraction 
+    of information F(X;Y|Z) between two attribute sets X and Y, given Z."""
     if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):
         X=X.to_numpy();
         Y=Y.to_numpy();
