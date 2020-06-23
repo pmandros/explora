@@ -11,7 +11,7 @@ import numpy as np;
 import scipy.stats as sc;
 import time
 from some_statistics.basic_statistics import empirical_statistics
-from  utilities.tools import make_single_column, size_and_counts_of_contingency_table
+from  utilities.tools import make_single_column, size_and_counts_of_contingency_table, append_two_arrays
 
 def entropy(prob_vector):
     """
@@ -51,7 +51,7 @@ def mutual_information_plugin(X,Y,with_cross_tab=False,contingency_table=None):
     else:
         entropyX=entropy_plugin(X);
         entropy_Y=entropy_plugin(Y);
-        dataXY=np.column_stack((X,Y));      
+        dataXY=append_two_arrays(X,Y);      
         entropyXY=entropy_plugin(dataXY);
         return entropyX + entropy_Y- entropyXY   
     
@@ -77,7 +77,7 @@ def fraction_of_information_plugin(X,Y,with_cross_tab=False,contingency_table=No
         
         if entropy_Y==None:
             entropy_Y=entropy_plugin(Y);
-        dataXY=np.column_stack((X,Y));        
+        dataXY=append_two_arrays(X,Y);        
         entropyXY=entropy_plugin(dataXY);
         return (entropyX + entropy_Y- entropyXY)/entropy_Y
     

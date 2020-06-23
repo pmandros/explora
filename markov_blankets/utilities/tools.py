@@ -13,65 +13,102 @@ import numpy as np
 def make_single_column(X):
     """ Combines multiple columns into one with resulting domain the distinct JOINT values of the input columns"""
     if isinstance(X, pd.DataFrame):
-        num_columns=X.shape[1];
+        num_columns=X.shape[1]
         if num_columns>1:
-            return  X[X.columns].astype('str').agg('-'.join, axis=1);
+            return  X[X.columns].astype('str').agg('-'.join, axis=1)
         else:
-            return X;
+            return X
     elif isinstance(X, np.ndarray):
-        num_columns=X.ndim;
-        if num_columns>1:
-            return np.unique(X,return_inverse=True,axis=0)[1];
-        else:
-            return X;
+        num_dim=X.ndim
+        if num_dim==2:
+            return np.unique(X,return_inverse=True,axis=0)[1]
+        elif num_dim==1:
+            return X
     elif isinstance(X,pd.Series):
-        return X;
+        return X
+    
+
+def append_two_arrays(X,Z):
+    """ Appends X and Z horizontally """
+    if Z is None:
+        return X
+    
+    if X is None:
+        return Z
+       
+    return np.column_stack((X,Z))
     
     
 def to_numpy_if_not(X):
     """ Returns the numpy representation if dataframe"""
     if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):  
-        X=X.to_numpy();
+        X=X.to_numpy()
     return X
     
+def number_of_columns(X):
+    """ Returns the number of columns of X, taking into account different shapes"""
+    if isinstance(X, pd.DataFrame):
+        return X.shape[1]
+    elif isinstance(X, np.ndarray):
+        num_dim=X.ndim
+        if num_dim==2:
+            return np.size(X,1)
+        elif num_dim==1:
+            return 1
+    elif isinstance(X,pd.Series):
+        return 1
+    
+def get_column(X,i):
+    """ Returns the i-th columns of X, taking into account different shapes"""
+    if isinstance(X, pd.DataFrame):
+        return X.iloc[i]
+    elif isinstance(X, np.ndarray):
+        num_dim=X.ndim
+        if num_dim==2:
+            return X[:,i]
+        elif num_dim==1 and i==0:
+            return X
+    elif isinstance(X,pd.Series):
+        return 1
+
     
 def size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,with_cross_tab=False,contingency_table=None):
     """
     Returns the size, and the marginal counts of X, Y, and XY (optionally)"""
      
     if contingency_table!=None:        
-        contingency_table=to_numpy_if_not(contingency_table);
-        size=contingency_table[-1,-1];
-        marginal_counts_Y=contingency_table[-1,:-1];
-        marginal_counts_X=contingency_table[:-1,-1];     
+        contingency_table=to_numpy_if_not(contingency_table)
+        size=contingency_table[-1,-1]
+        marginal_counts_Y=contingency_table[-1,:-1]
+        marginal_counts_X=contingency_table[:-1,-1]     
         if return_joint_counts:
-            joint_counts=contingency_table[:-1,:-1].flatten();        
+            joint_counts=contingency_table[:-1,:-1].flatten()        
     else:
         if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):  
-            X=X.to_numpy();
+            X=X.to_numpy()
         
         if isinstance(Y, pd.Series) or isinstance(Y, pd.DataFrame):  
-            Y=Y.to_numpy();
+            Y=Y.to_numpy()
         
-        X=make_single_column(X);
-        Y=make_single_column(Y);
+        X=make_single_column(X)
+        Y=make_single_column(Y)
         
         if with_cross_tab==True:         
-            contingency_table=pd.crosstab(X,Y,margins = True);
+            contingency_table=pd.crosstab(X,Y,margins = True)
 
-            contingency_table=to_numpy_if_not(contingency_table);
-            size=contingency_table[-1,-1];
-            marginal_counts_Y=contingency_table[-1,:-1];
-            marginal_counts_X=contingency_table[:-1,-1];
+            contingency_table=to_numpy_if_not(contingency_table)
+            size=contingency_table[-1,-1]
+            marginal_counts_Y=contingency_table[-1,:-1]
+            marginal_counts_X=contingency_table[:-1,-1]
             if return_joint_counts:
-                joint_counts=contingency_table[:-1,:-1].flatten();
+                joint_counts=contingency_table[:-1,:-1].flatten()
         else:
-            size=np.size(X,0);
-            marginal_counts_X=np.unique(X, return_counts=True, axis=0)[1];
-            marginal_counts_Y=np.unique(Y, return_counts=True, axis=0)[1]; 
+            size=np.size(X,0)
+            marginal_counts_X=np.unique(X, return_counts=True, axis=0)[1]
+            marginal_counts_Y=np.unique(Y, return_counts=True, axis=0)[1] 
             if return_joint_counts:
-                XY=np.column_stack((X,Y));
-                joint_counts=np.unique(XY, return_counts=True, axis=0)[1];
+                XY=append_two_arrays(X,Y)
+                joint_counts=np.unique(XY, return_counts=True, axis=0)[1]
                 
     if return_joint_counts:
         return size, marginal_counts_X, marginal_counts_Y, joint_counts
@@ -82,13 +119,13 @@ def size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,with_cros
 def size_and_counts_of_attribute(X):
     """
     Returns the size, and the value counts of X"""            
-    X=make_single_column(X);
+    X=make_single_column(X)
     if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):
-        counts=X.value_counts();
+        counts=X.value_counts()
         length=len(X.index)
     elif isinstance(X, np.ndarray):
-        counts=np.unique(X, return_counts=True,axis=0)[1];
-        length=np.size(X,0);
+        counts=np.unique(X, return_counts=True,axis=0)[1]
+        length=np.size(X,0)
              
     return length, counts
     
