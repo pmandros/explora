@@ -12,7 +12,7 @@ import time
 from information_theory.information_theory_basic import mutual_information_plugin, entropy_plugin
 from permutation_model import expected__mutual_information_permutation_model_upper_bound, expected_mutual_information_permutation_model
 
-from utilities.tools import make_single_column
+from utilities.tools import merge_columns
 
 
 
@@ -100,9 +100,9 @@ def conditional_fraction_of_information_permutation(X,Y,Z):
         Y=Y.to_numpy();
         Z=Z.to_numpy();
         
-    Z=make_single_column(Z);
-    Y=make_single_column(Y);
-    X=make_single_column(X);
+    Z=merge_columns(Z);
+    Y=merge_columns(Y);
+    X=merge_columns(X);
    
     length=np.size(X,0);
     condEntropy=conditional_entropy_permutation(Z,Y);
@@ -124,9 +124,9 @@ def conditional_fraction_of_information_permutation_upper_bound(X,Y,Z):
         Y=Y.to_numpy();
         Z=Z.to_numpy();
         
-    Z=make_single_column(Z);
-    Y=make_single_column(Y);
-    X=make_single_column(X);
+    Z=merge_columns(Z);
+    Y=merge_columns(Y);
+    X=merge_columns(X);
    
     length=np.size(X,0);
     condEntropy=conditional_entropy_permutation_upper_bound(Z,Y);

@@ -10,7 +10,8 @@ import pandas as pd
 import numpy as np
 
 
-def make_single_column(X):
+
+def merge_columns(X):
     """ Combines multiple columns into one with resulting domain the distinct JOINT values of the input columns"""
     if isinstance(X, pd.DataFrame):
         num_columns=X.shape[1]
@@ -26,7 +27,8 @@ def make_single_column(X):
             return X
     elif isinstance(X,pd.Series):
         return X
-    
+  
+
 
 def append_two_arrays(X,Z):
     """ Appends X and Z horizontally """
@@ -35,8 +37,16 @@ def append_two_arrays(X,Z):
     
     if X is None:
         return Z
-       
+    
+    if X is None and Z is None:
+        raise ValueError('Both arrays cannot be None')
+     
     return np.column_stack((X,Z))
+
+def append_and_merge(X,Y):
+    """ Appends X and Y horizontally and then merges"""
+    Z=append_two_arrays(X,Y)
+    return merge_columns(Z)
     
     
 def to_numpy_if_not(X):
@@ -90,8 +100,8 @@ def size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,with_cros
         if isinstance(Y, pd.Series) or isinstance(Y, pd.DataFrame):  
             Y=Y.to_numpy()
         
-        X=make_single_column(X)
-        Y=make_single_column(Y)
+        X=merge_columns(X)
+        Y=merge_columns(Y)
         
         if with_cross_tab==True:         
             contingency_table=pd.crosstab(X,Y,margins = True)
@@ -119,7 +129,7 @@ def size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,with_cros
 def size_and_counts_of_attribute(X):
     """
     Returns the size, and the value counts of X"""            
-    X=make_single_column(X)
+    X=merge_columns(X)
     if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):
         counts=X.value_counts()
         length=len(X.index)

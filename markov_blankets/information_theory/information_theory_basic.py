@@ -11,7 +11,7 @@ import numpy as np;
 import scipy.stats as sc;
 import time
 from some_statistics.basic_statistics import empirical_statistics
-from  utilities.tools import make_single_column, size_and_counts_of_contingency_table, append_two_arrays
+from  utilities.tools import merge_columns, size_and_counts_of_contingency_table, append_two_arrays
 
 def entropy(prob_vector):
     """
@@ -90,8 +90,8 @@ def conditional_entropy_plugin(Z,Y):
         Z=Z.to_numpy();
         
     
-    Z=make_single_column(Z);
-    Y=make_single_column(Y);
+    Z=merge_columns(Z);
+    Y=merge_columns(Y);
     
     length=np.size(Z,0);
     uniqueValuesZ=np.unique(Z); 
