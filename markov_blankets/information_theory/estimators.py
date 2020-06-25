@@ -10,7 +10,7 @@ import pandas as pd;
 import numpy as np;
 import time
 from information_theory.information_theory_basic import mutual_information_plugin, entropy_plugin
-from permutation_model import expected__mutual_information_permutation_model_upper_bound, expected_mutual_information_permutation_model
+from information_theory.permutation_model import expected__mutual_information_permutation_model_upper_bound, expected_mutual_information_permutation_model
 
 from utilities.tools import merge_columns
 
