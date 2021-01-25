@@ -7,6 +7,7 @@ Created on Sat Jun 13 15:13:25 2020
 """
 
 import pandas as pd;
+import sys
 import numpy as np;
 import time
 from information_theory.information_theory_basic import mutual_information_plugin, entropy_plugin
@@ -34,7 +35,7 @@ def mutual_information_permutation(X,Y,with_cross_tab=False,contingency_table=No
     correction=expected_mutual_information_permutation_model(X,Y,contingency_table)
     return mi-correction;
 
-def fraction_of_information_permutation(X,Y,with_cross_tab=False,contingency_table=None, entropy_Y=None):
+def fraction_of_information_permutation(X,Y,with_cross_tab=True,contingency_table=None, entropy_Y=None):
     """
     The corrected estimator for fraction of information F(X,Y) between two attribute sets X 
     and Y of Mandros et al. (KDD'2017) (corrects by subtracting the expected value
@@ -72,7 +73,7 @@ def mutual_information_permutation_upper_bound(X,Y,with_cross_tab=False,continge
     return mi-correction;
 
 
-def fraction_of_information_permutation_upper_bound(X,Y,with_cross_tab=False,contingency_table=None,entropy_Y=None):
+def fraction_of_information_permutation_upper_bound(X,Y,with_cross_tab=True,contingency_table=None,entropy_Y=None):
     """
     The plugin estimator for fraction of information F(X,Y) between two attribute sets X 
     and Y corrected with an upper bound of the permutation nodel. It can be computed

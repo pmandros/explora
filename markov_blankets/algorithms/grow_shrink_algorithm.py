@@ -34,7 +34,7 @@ def grow_shrink(grow_estimator,shrink_estimator, data,  shrink_threshold=0,targe
     # print("--- %s Time for grow---" % (time.time() - start_time))
 
     # start_time = time.time();  
-
+    greedyResult={x-1 for x in greedyResult}
     shrinkResults=shrink(shrink_estimator,greedyResult,data,shrink_threshold=shrink_threshold,target=None)
     # print("--- %s Time to shrink---" % (time.time() - start_time))
     return shrinkResults
@@ -51,44 +51,44 @@ def main():
     # print(biggerBiggerData.info())
     
     
-    # checking with upper-bound FI
-    selected=grow_shrink(fraction_of_information_permutation_upper_bound,
-                         conditional_fraction_of_information_permutation_upper_bound,
-                         data.to_numpy(),shrink_threshold=0)
-    assert(selected=={4,0,8})
+    # # checking with upper-bound FI
+    # selected=grow_shrink(fraction_of_information_permutation_upper_bound,
+    #                      conditional_fraction_of_information_permutation_upper_bound,
+    #                      data.to_numpy(),shrink_threshold=0)
+    # assert(selected=={5,1,9})
     
-    selected=grow_shrink(fraction_of_information_permutation_upper_bound,
-                         conditional_fraction_of_information_permutation_upper_bound,
-                         data.to_numpy(),shrink_threshold=0.21)
-    assert(selected=={4})
-    
-    
-    # checking with upper-bound FI
-    selected=grow_shrink(fraction_of_information_permutation,
-                         conditional_fraction_of_information_permutation,
-                         data.to_numpy(),shrink_threshold=0)
-    assert(selected=={4,0,8,2,6})
-    
-    selected=grow_shrink(fraction_of_information_permutation,
-                         conditional_fraction_of_information_permutation,
-                         data.to_numpy(),shrink_threshold=0.2)
-    assert(selected=={4,2,6})
+    # selected=grow_shrink(fraction_of_information_permutation_upper_bound,
+    #                      conditional_fraction_of_information_permutation_upper_bound,
+    #                      data.to_numpy(),shrink_threshold=0.21)
+    # assert(selected=={5})
     
     
+    # # checking with upper-bound FI
+    # selected=grow_shrink(fraction_of_information_permutation,
+    #                      conditional_fraction_of_information_permutation,
+    #                      data.to_numpy(),shrink_threshold=0)
+    # assert(selected=={5,1,9,3,7})
+    
+    # selected=grow_shrink(fraction_of_information_permutation,
+    #                      conditional_fraction_of_information_permutation,
+    #                      data.to_numpy(),shrink_threshold=0.2)
+    # assert(selected=={5,3,7})
     
     
-    # performance with upper-bound corrected FI
-    start_time=time.time()
-    selected=grow_shrink(fraction_of_information_permutation_upper_bound,
-                         conditional_fraction_of_information_permutation_upper_bound,
-                         data.to_numpy(),shrink_threshold=0)
-    print("--- %s seconds for grow shrink with upper-dound F1 on small data---" % (time.time() - start_time))
     
-    start_time=time.time()
-    selected=grow_shrink(fraction_of_information_permutation_upper_bound,
-                         conditional_fraction_of_information_permutation_upper_bound,
-                         biggerBiggerData.to_numpy(),shrink_threshold=0)
-    print("--- %s seconds for grow shrink with upper-dound F1 on big data---" % (time.time() - start_time))
+    
+    # # performance with upper-bound corrected FI
+    # start_time=time.time()
+    # selected=grow_shrink(fraction_of_information_permutation_upper_bound,
+    #                      conditional_fraction_of_information_permutation_upper_bound,
+    #                      data.to_numpy(),shrink_threshold=0)
+    # print("--- %s seconds for grow shrink with upper-dound F1 on small data---" % (time.time() - start_time))
+    
+    # start_time=time.time()
+    # selected=grow_shrink(fraction_of_information_permutation_upper_bound,
+    #                      conditional_fraction_of_information_permutation_upper_bound,
+    #                      biggerBiggerData.to_numpy(),shrink_threshold=0)
+    # print("--- %s seconds for grow shrink with upper-dound F1 on big data---" % (time.time() - start_time))
 
     
     
@@ -100,11 +100,11 @@ def main():
                          data.to_numpy(),shrink_threshold=0)
     print("--- %s seconds for grow shrink with permutation F1 on small data---" % (time.time() - start_time))
     
-    start_time=time.time()
-    selected=grow_shrink(fraction_of_information_permutation,
-                         conditional_fraction_of_information_permutation,
-                         biggerBiggerData.to_numpy(),shrink_threshold=0)
-    print("--- %s seconds for grow shrink with permutation F1 on big data---" % (time.time() - start_time))
+    # start_time=time.time()
+    # selected=grow_shrink(fraction_of_information_permutation,
+    #                      conditional_fraction_of_information_permutation,
+    #                      biggerBiggerData.to_numpy(),shrink_threshold=0)
+    # print("--- %s seconds for grow shrink with permutation F1 on big data---" % (time.time() - start_time))
     
     
     
