@@ -7,8 +7,6 @@ Created on Mon May 25 19:45:52 2020
 """
 
 import time
-import sys
-sys.path.append('../')
 from operator import itemgetter
 
 import numpy as np
