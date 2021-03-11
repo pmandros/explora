@@ -64,9 +64,9 @@ def greedy_search(estimator, data, target_variable=None, limit=None, select_from
     selected_data_column=None
 
     for i in range(limit):  
-        print(i)
         selected_candidate_score,selected_candidate_index=refine_evaluate_choose(estimator, data, Y_data_column, 
-                                                                                 selected_variables_indices, candidate_variables_indices,control_variables_indices,selected_data_column, is_stochastic,select_from_top_k)
+                                                                                 selected_variables_indices, candidate_variables_indices,control_variables_indices,
+                                                                                 selected_data_column, is_stochastic,select_from_top_k)
         
         # terminate early if score does not improve, or when score is <=0
         if selected_candidate_score <= 0 or selected_candidate_score <= best_score:
