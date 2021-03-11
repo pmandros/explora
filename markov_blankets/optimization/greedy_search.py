@@ -6,27 +6,20 @@ Created on Mon May 25 19:45:52 2020
 @author: Panagiotis Mandros
 """
 
-<<<<<<< Updated upstream
-import heapq
-import random
-=======
 import time
 import sys
 sys.path.append('../')
->>>>>>> Stashed changes
 from operator import itemgetter
 
 import numpy as np
 import pandas as pd
-<<<<<<< Updated upstream
-=======
+
 from timeit import timeit
 from  utilities.tools import append_and_merge
 from refinement_and_evaluation import refine_evaluate_choose
 import math
 import heapq
 import random
->>>>>>> Stashed changes
 
 from markov_blankets.information_theory.estimators import fraction_of_information_permutation_upper_bound
 from markov_blankets.utilities.tools import append_and_merge
