@@ -6,7 +6,7 @@ Created on Wed Mar 10 15:59:26 2021
 @author: Panagiotis Mandros
 """
 
-from  utilities.tools import append_and_merge
+from  markov_blankets.utilities.tools import append_and_merge
 import heapq
 import random
 from operator import itemgetter
