@@ -6,9 +6,8 @@ Created on Sat Jun 13 14:28:55 2020
 @author: Panagiotis Mandros
 """
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 
 
 def merge_columns(X):

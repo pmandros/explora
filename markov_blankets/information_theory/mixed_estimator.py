@@ -5,15 +5,15 @@ Created on Sat Jun 20 03:02:15 2020
 
 @author: Panagiotis Mandros
 """
-import pandas as pd
-import numpy as np
 import math
-from utilities.tools import append_two_arrays, number_of_columns, get_column
-from operator import itemgetter
-from estimators import fraction_of_information_permutation
-from functools import partial
-from timeit import timeit
 import time
+from operator import itemgetter
+
+import numpy as np
+import pandas as pd
+
+from estimators import fraction_of_information_permutation
+from markov_blankets.utilities.tools import append_two_arrays, number_of_columns, get_column
 
 
 def mixed_estimator(C,Y,estimator, G=None, max_number_partitions=None,sorting=False):

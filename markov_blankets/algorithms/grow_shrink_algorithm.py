@@ -6,12 +6,15 @@ Created on Tue May 26 03:34:55 2020
 @author: Panagiotis Mandros
 """
 
-import numpy as np;
-import pandas as pd
-from optimization.greedy_search import greedy_search
-from algorithms.shrink import shrink
 import time
-from information_theory.estimators import fraction_of_information_permutation_upper_bound,conditional_fraction_of_information_permutation_upper_bound, fraction_of_information_permutation, conditional_fraction_of_information_permutation
+
+import numpy as np
+import pandas as pd
+
+from markov_blankets.algorithms.shrink import shrink
+from markov_blankets.information_theory.estimators import fraction_of_information_permutation,\
+    conditional_fraction_of_information_permutation
+from markov_blankets.optimization.greedy_search import greedy_search
 
 
 def grow_shrink(grow_estimator,shrink_estimator, data,  shrink_threshold=0,target=None,limit=None):

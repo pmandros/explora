@@ -11,12 +11,14 @@ from functools import partial
 from itertools import product
 from multiprocessing import Pool
 from timeit import timeit
-from utilities.tools import size_and_counts_of_contingency_table
-from some_statistics.basic_statistics import hypergeometric_pmf
-import time
+
 import numba as nb
 import numpy as np
 import pandas as pd
+
+from markov_blankets.some_statistics.basic_statistics import hypergeometric_pmf
+from markov_blankets.utilities.tools import size_and_counts_of_contingency_table
+
 
 def expected__mutual_information_permutation_model_upper_bound(X,Y,with_cross_tab=False,contingency_table=None):
     """

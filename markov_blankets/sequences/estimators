@@ -6,10 +6,9 @@ Created on Sat Jun 13 21:19:34 2020
 @author: Panagiotis Mandros
 """
 
-
 import numpy as np
 import pandas as pd
-import time
+
 
 def KT_estimator(symbol, history, alphabet_size=None, smoothing_amount=None):
     """

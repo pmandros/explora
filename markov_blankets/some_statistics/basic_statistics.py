@@ -6,12 +6,13 @@ Created on Sat Jun 13 14:37:54 2020
 @author: Panagiotis Mandros
 """
 
-import pandas as pd
-import numpy as np
-import numba as nb
 import math
+
+import numba as nb
+import numpy as np
 from scipy.stats import hypergeom
-from utilities.tools import size_and_counts_of_attribute
+
+from markov_blankets.utilities.tools import size_and_counts_of_attribute
 
 
 def empirical_distribution_from_counts(counts,size=None):

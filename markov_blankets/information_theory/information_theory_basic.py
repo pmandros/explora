@@ -6,12 +6,16 @@ Created on Sun May 24 14:29:50 2020
 @author: Panagiotis Mandros
 """
 
-import pandas as pd;
-import numpy as np;
-import scipy.stats as sc;
 import time
-from some_statistics.basic_statistics import empirical_statistics
-from  utilities.tools import merge_columns, size_and_counts_of_contingency_table, append_two_arrays
+
+import numpy as np
+import pandas as pd
+import scipy.stats as sc
+
+from markov_blankets.some_statistics.basic_statistics import empirical_statistics
+from markov_blankets.utilities.tools import merge_columns, size_and_counts_of_contingency_table,\
+    append_two_arrays
+
 
 def entropy(prob_vector):
     """

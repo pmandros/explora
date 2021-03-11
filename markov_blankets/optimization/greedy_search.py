@@ -6,18 +6,16 @@ Created on Mon May 25 19:45:52 2020
 @author: Panagiotis Mandros
 """
 
-import time
-from operator import itemgetter
-from functools import partial
-import numpy as np
-import pandas as pd
-from timeit import timeit
-from  utilities.tools import append_and_merge
-import math
 import heapq
 import random
+from operator import itemgetter
 
-from information_theory.estimators import mutual_information_permutation_upper_bound, fraction_of_information_permutation_upper_bound, fraction_of_information_permutation, conditional_fraction_of_information_permutation
+import numpy as np
+import pandas as pd
+
+from markov_blankets.information_theory.estimators import fraction_of_information_permutation_upper_bound
+from markov_blankets.utilities.tools import append_and_merge
+
 
 def greedy_search(estimator, data, target=None, limit=None, prior_solution_set=None, randomly_choose_from_top=1, control_set=None):
     """

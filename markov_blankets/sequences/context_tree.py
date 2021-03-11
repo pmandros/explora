@@ -6,11 +6,11 @@ Created on Sat Jun  6 13:11:42 2020
 @author: Panagiotis Mandros
 """
 
+from collections import defaultdict
 
 import numpy as np
 import pandas as pd
-import time
-from collections import defaultdict
+
 
 def context_tree(sequence, markov_order=1):
     """

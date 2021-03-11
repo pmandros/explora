@@ -6,18 +6,19 @@ Created on Sat Jun 13 15:13:25 2020
 @author: Panagiotis Mandros
 """
 
-import pandas as pd;
-import sys
-import numpy as np;
 import time
-from information_theory.information_theory_basic import mutual_information_plugin, entropy_plugin
-from information_theory.permutation_model import expected__mutual_information_permutation_model_upper_bound, expected_mutual_information_permutation_model
 
-from utilities.tools import merge_columns
+import numpy as np
+import pandas as pd
+
+from markov_blankets.information_theory.information_theory_basic import mutual_information_plugin, entropy_plugin
+from markov_blankets.information_theory.permutation_model import\
+    expected__mutual_information_permutation_model_upper_bound,\
+    expected_mutual_information_permutation_model
+from markov_blankets.utilities.tools import merge_columns
 
 
-
-def mutual_information_permutation(X,Y,with_cross_tab=False,contingency_table=None): 
+def mutual_information_permutation(X,Y,with_cross_tab=False,contingency_table=None):
     """
     The corrected estimator for mutual information I(X,Y) between two attribute sets X 
     and Y of Mandros et al. (KDD'2017) (corrects by subtracting the expected value
