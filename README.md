@@ -1,4 +1,4 @@
-# markov_blankets
+# explora
 Discovering Markov blankets in static and sequence data
 
 # How to use
