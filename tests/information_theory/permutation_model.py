@@ -1,10 +1,10 @@
-""" Test cases for markov_blankets.information_theory.permutation_model module """
+""" Test cases for explora.information_theory.permutation_model module """
 
 import pytest
 import numpy as np
 from pytest import approx
 
-from markov_blankets.information_theory.permutation_model import (
+from explora.information_theory.permutation_model import (
     expected_mutual_information_permutation_model,
 )
 

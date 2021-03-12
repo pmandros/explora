@@ -1,8 +1,8 @@
-""" Test cases for markov_blankets.utilities.tools module """
+""" Test cases for explora.utilities.tools module """
 
 import pytest
 
-from markov_blankets.utilities.tools import choose_no_overflow
+from explora.utilities.tools import choose_no_overflow
 
 
 def test_choose_no_overflow():
