@@ -9,10 +9,8 @@ Created on Mon May 25 19:45:52 2020
 import numpy as np
 import pandas as pd
 
-from explora.information_theory.estimators import \
-    fraction_of_information_permutation_upper_bound
+from explora.optimization.refinement_and_evaluation import refine_evaluate_choose
 from explora.utilities.tools import append_and_merge
-from refinement_and_evaluation import refine_evaluate_choose
 
 
 def greedy_search(estimator, data, target_variable=None, limit=None, select_from_top_k=1, is_stochastic=False,
@@ -74,91 +72,55 @@ def greedy_search(estimator, data, target_variable=None, limit=None, select_from
             candidate_variables_indices.remove(selected_candidate_index)
     return {x + 1 for x in selected_variables_indices}, best_score
 
-
-def main():
-    # data = pd.read_csv("../datasets/tic_tac_toe.csv")
-    # biggerData=data.append(data).append(data).append(data).append(data).append(data).append(data)
-    # biggerBiggerData=biggerData.append(biggerData).append(biggerData).append(biggerData).append(biggerData).append(biggerData)
-    # biggerBiggerData=biggerBiggerData.append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData)
-
-    # # test for upper-bound MI
-    # [selected,bestScore]=greedy_search(mutual_information_permutation_upper_bound,data)
-    # assert(math.isclose(0.28707781833145635,bestScore,abs_tol=1e-8))
-    # assert(selected=={1,5,9})
-    # print(selected)
-
-    # # test for permutation upper-bound FI
-    # [selected,bestScore]=greedy_search(fraction_of_information_permutation_upper_bound,data)
-    # assert(math.isclose(0.3083695032958573,bestScore,abs_tol=1e-8))
-
-    # # test for permutation FI 
-    # [selected,bestScore]=greedy_search(fraction_of_information_permutation,data)
-    # assert(math.isclose(0.4447970033469652,bestScore,abs_tol=1e-8))
-    # assert(selected=={1,5,9, 3,7})
-
-    # # conditional test for fraction of information permutation
-    # control_var_set={5}
-    # [selected,bestScore]=greedy_search(conditional_fraction_of_information_permutation,data,control_variables=control_var_set)
-    # assert(math.isclose(0.3561447636856704,bestScore,abs_tol=1e-8))
-    # assert(selected=={1,9, 3,7})
-
-    # # conditional test for fraction of information permutation
-    # control_var_set={5}
-    # [selected,bestScore]=greedy_search(conditional_fraction_of_information_permutation,data,control_variables=control_var_set,select_from_top_k=3)
-    # print(f'selected {selected} with score {bestScore}')
-
-    #  # conditional test for fraction of information permutation
-    # [selected,bestScore]=greedy_search(fraction_of_information_permutation,data,select_from_top_k=1,target_variable=1)
-    # print(f'selected {selected} with score {bestScore}')
-
-    # # # # performance tests
-    # num_rep=5
-
-    # # # plugin MI
-    # # smallDataMI = partial(greedy_search,mutual_information_plugin,data)
-    # # print(timeit(smallDataMI, number=num_rep)/num_rep, "Small data plugin MI")
-
-    # # biggerBiggerDataUpMI = partial(greedy_search, mutual_information_plugin,biggerBiggerData)
-    # # print(timeit(biggerBiggerDataUpMI, number=num_rep)/num_rep,"Big data plugin MI")    
-
-    # # #  upper bound MI
-    # # smallDataUpFI = partial(greedy_search, mutual_information_permutation_upper_bound,data)
-    # # print(timeit(smallDataUpFI, number=num_rep)/num_rep,"Small data upper-bound MI")
-
-    # # biggerBiggerDataUpFI = partial(greedy_search, mutual_information_permutation_upper_bound,biggerBiggerData)
-    # # print(timeit(biggerBiggerDataUpFI, number=num_rep)/num_rep,"Big data upper-bound MI")
-
-    # # corrected FI
-    # smallDataUpFI = partial(greedy_search, fraction_of_information_permutation_upper_bound,data)
-    # print(timeit(smallDataUpFI, number=num_rep)/num_rep,"Small data corrected FI")
-
-    # # biggerBiggerDataUpFI = partial(greedy_search, fraction_of_information_permutation,biggerBiggerData)
-    # # print(timeit(biggerBiggerDataUpFI, number=num_rep)/num_rep,"Big data corrected FI")
-
-    # #   # performance of random
-    # # smallDataMI = partial(greedy_search,mutual_information_plugin,data,select_from_top_k=3)
-    # # print(timeit(smallDataMI, number=num_rep)/num_rep, "Small data random plugin MI")
-
-    # # biggerBiggerDataUpMI = partial(greedy_search, mutual_information_plugin,biggerBiggerData,select_from_top_k=3)
-    # # print(timeit(biggerBiggerDataUpMI, number=num_rep)/num_rep,"Big data random plugin MI")    
-
-    # # # permormance with num coluns
-    # # dfs=[biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData]
-    # # high_dim_data = pd.concat(dfs, axis=1)
-
-    # # biggerBiggerDataUpMI = partial(greedy_search, mutual_information_plugin,high_dim_data, select_from_top_k=5)
-    # # # print(high_dim_data.shape)
-    # # print(timeit(biggerBiggerDataUpMI, number=num_rep)/num_rep,"Data many column random plugin MI")
-
-    data_mnist = pd.read_csv("../../datasets/mnist_test_10k_binary.csv", header=None)
-    [selected, bestScore] = greedy_search(fraction_of_information_permutation_upper_bound, data_mnist,
-                                          is_stochastic=True, limit=2)
-    print(f'selected for MNIST {selected} with score {bestScore}')
-    data_mnist['combined'] = data_mnist[list(selected)].apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
-    cros = pd.crosstab(data_mnist.loc[:, 784], data_mnist['combined'])
-    cros.to_csv("output.csv", index=False)
-    print(cros)
-
-
-if __name__ == "__main__":
-    main()
+# def main():
+#     # # # # performance tests
+#     # num_rep=5
+#
+#     # # # plugin MI
+#     # # smallDataMI = partial(greedy_search,mutual_information_plugin,data)
+#     # # print(timeit(smallDataMI, number=num_rep)/num_rep, "Small data plugin MI")
+#
+#     # # biggerBiggerDataUpMI = partial(greedy_search, mutual_information_plugin,biggerBiggerData)
+#     # # print(timeit(biggerBiggerDataUpMI, number=num_rep)/num_rep,"Big data plugin MI")
+#
+#     # # #  upper bound MI
+#     # # smallDataUpFI = partial(greedy_search, mutual_information_permutation_upper_bound,data)
+#     # # print(timeit(smallDataUpFI, number=num_rep)/num_rep,"Small data upper-bound MI")
+#
+#     # # biggerBiggerDataUpFI = partial(greedy_search, mutual_information_permutation_upper_bound,biggerBiggerData)
+#     # # print(timeit(biggerBiggerDataUpFI, number=num_rep)/num_rep,"Big data upper-bound MI")
+#
+#     # # corrected FI
+#     # smallDataUpFI = partial(greedy_search, fraction_of_information_permutation_upper_bound,data)
+#     # print(timeit(smallDataUpFI, number=num_rep)/num_rep,"Small data corrected FI")
+#
+#     # # biggerBiggerDataUpFI = partial(greedy_search, fraction_of_information_permutation,biggerBiggerData)
+#     # # print(timeit(biggerBiggerDataUpFI, number=num_rep)/num_rep,"Big data corrected FI")
+#
+#     # #   # performance of random
+#     # # smallDataMI = partial(greedy_search,mutual_information_plugin,data,select_from_top_k=3)
+#     # # print(timeit(smallDataMI, number=num_rep)/num_rep, "Small data random plugin MI")
+#
+#     # # biggerBiggerDataUpMI = partial(greedy_search, mutual_information_plugin,biggerBiggerData,select_from_top_k=3)
+#     # # print(timeit(biggerBiggerDataUpMI, number=num_rep)/num_rep,"Big data random plugin MI")
+#
+#     # # # permormance with num coluns
+#     # # dfs=[biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData,biggerBiggerData]
+#     # # high_dim_data = pd.concat(dfs, axis=1)
+#
+#     # # biggerBiggerDataUpMI = partial(greedy_search, mutual_information_plugin,high_dim_data, select_from_top_k=5)
+#     # # # print(high_dim_data.shape)
+#     # # print(timeit(biggerBiggerDataUpMI, number=num_rep)/num_rep,"Data many column random plugin MI")
+#
+#     data_mnist = pd.read_csv("../../datasets/mnist_test_10k_binary.csv", header=None)
+#     [selected, bestScore] = greedy_search(fraction_of_information_permutation_upper_bound, data_mnist,
+#                                           is_stochastic=True, limit=2)
+#     print(f'selected for MNIST {selected} with score {bestScore}')
+#     data_mnist['combined'] = data_mnist[list(selected)].apply(lambda row: '_'.join(row.values.astype(str)), axis=1)
+#     cros = pd.crosstab(data_mnist.loc[:, 784], data_mnist['combined'])
+#     cros.to_csv("output.csv", index=False)
+#     print(cros)
+#
+#
+# if __name__ == "__main__":
+#     main()

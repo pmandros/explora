@@ -11,7 +11,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from algorithms import shrink
+from explora.algorithms import shrink
 from explora.information_theory.estimators import fraction_of_information_permutation,\
     conditional_fraction_of_information_permutation
 from explora.optimization.greedy_search import greedy_search
@@ -38,14 +38,14 @@ def grow_shrink(grow_estimator,shrink_estimator, data,  shrink_threshold=0,targe
 
     # start_time = time.time();  
     greedyResult={x-1 for x in greedyResult}
-    shrinkResults=shrink(shrink_estimator,greedyResult,data,shrink_threshold=shrink_threshold,target=None)
+    shrinkResults= shrink(shrink_estimator, greedyResult, data, shrink_threshold=shrink_threshold, target=None)
     # print("--- %s Time to shrink---" % (time.time() - start_time))
     return shrinkResults
 
     
 
 def main():
-    data = pd.read_csv("../datasets/tic_tac_toe.csv");
+    data = pd.read_csv("../../datasets/tic_tac_toe.csv");
     biggerData=data.append(data).append(data).append(data).append(data).append(data).append(data)
     biggerBiggerData=biggerData.append(biggerData).append(biggerData).append(biggerData).append(biggerData).append(biggerData)
     biggerBiggerData=biggerBiggerData.append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData).append(biggerBiggerData)
