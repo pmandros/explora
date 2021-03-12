@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "markov_blankets"
+name = "explora"
 version = "0.1.0"
 description = ""
 authors = ["Panagiotis Mandros <mandros.p@gmail.com>"]
