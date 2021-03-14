@@ -1,4 +1,4 @@
-from explora.optimization import greedy_search
+from explora.optimization.greedy_search import greedy_search
 
 
 def stochastic_markov_blanket_discovery(estimator, data, target_variable=None, limit=None, control_variables=None):

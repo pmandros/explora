@@ -70,6 +70,7 @@ def greedy_search(estimator, data, target_variable=None, limit=None, select_from
             best_score = selected_candidate_score
             selected_variables_indices.add(selected_candidate_index)
             candidate_variables_indices.remove(selected_candidate_index)
+            print(f'selected attribute {selected_candidate_index} with score {best_score}')
     return {x + 1 for x in selected_variables_indices}, best_score
 
 # def main():
