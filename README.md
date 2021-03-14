@@ -1,5 +1,5 @@
 # explora
-Discovering Markov blankets
+Explora discovers Markov blankets and approximate functional dependencies for supervised feature selection tasks.
 
 ## What is it?
 **explora** is a Python package that provides fast and flexible algorithms for 
