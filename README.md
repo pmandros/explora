@@ -19,7 +19,7 @@ from explora.information_theory.estimators import fraction_of_information_permut
 
 data = pd.DataFrame(...)
 result, score = stochastic_markov_blanket_discovery(fraction_of_information_permutation, data)
-print(f'selected attributes with permutation {result} with score {score}')
+print(f'stochastic optimization with permutation-based estimator selected attributes {result} with score {score}')
 ```
 
 For more examples, see [examples](examples) folder
