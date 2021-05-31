@@ -15,4 +15,4 @@ data_tic = pd.read_csv(data_file_tic)
 data_mnist = pd.read_csv(data_file_mnist)
 
 # exact DFS
-result,d score = depth_first_search(data_mnist, mutual_information_permutation_upper_bound, new_pruning_rule=True)
+result, score = depth_first_search(data_mnist, mutual_information_permutation_upper_bound, new_pruning_rule=True)
