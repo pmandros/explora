@@ -18,7 +18,7 @@ from explora.information_theory.permutation_model import \
 from explora.utilities.tools import merge_columns
 
 
-def mutual_information_permutation(X, Y, with_cross_tab=False, contingency_table=None):
+def mutual_information_permutation(X, Y, with_cross_tab=False, contingency_table=None,return_correction_term=False):
     """
     The corrected estimator for mutual information I(X,Y) between two attribute sets X 
     and Y of Mandros et al. (KDD'2017) (corrects by subtracting the expected value
@@ -33,7 +33,11 @@ def mutual_information_permutation(X, Y, with_cross_tab=False, contingency_table
 
     mi = mutual_information_plugin(X, Y, with_cross_tab, contingency_table)
     correction = expected_mutual_information_permutation_model(X, Y, contingency_table)
-    return mi - correction
+
+    if return_correction_term is False:
+        return mi - correction
+    else:
+        return mi - correction, correction
 
 
 def fraction_of_information_permutation(X, Y, with_cross_tab=True, contingency_table=None, entropy_Y=None):
@@ -55,7 +59,7 @@ def fraction_of_information_permutation(X, Y, with_cross_tab=True, contingency_t
     return corMi / entropy_Y
 
 
-def mutual_information_permutation_upper_bound(X, Y, with_cross_tab=False, contingency_table=None):
+def mutual_information_permutation_upper_bound(X, Y, with_cross_tab=True, contingency_table=None,return_correction_term=False):
     """
     The plugin estimator for mutual information I(X,Y) between two attribute sets X 
     and Y corrected with an upper bound of the permutation nodel. It can be computed
@@ -69,7 +73,10 @@ def mutual_information_permutation_upper_bound(X, Y, with_cross_tab=False, conti
 
     mi = mutual_information_plugin(X, Y, with_cross_tab, contingency_table)
     correction = expected__mutual_information_permutation_model_upper_bound(X, Y, contingency_table)
-    return mi - correction
+    if return_correction_term is False:
+        return mi - correction
+    else:
+        return mi - correction, correction
 
 
 def fraction_of_information_permutation_upper_bound(X, Y, with_cross_tab=True, contingency_table=None, entropy_Y=None):
