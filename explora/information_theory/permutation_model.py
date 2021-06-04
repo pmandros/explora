@@ -18,7 +18,7 @@ from explora.some_statistics.basic_statistics import hypergeometric_pmf
 from explora.utilities.tools import size_and_counts_of_contingency_table
 
 
-def expected__mutual_information_permutation_model_upper_bound(X, Y, with_cross_tab=False, contingency_table=None):
+def expected_mutual_information_permutation_model_upper_bound(X, Y, with_cross_tab=False, contingency_table=None):
     """
     Computes an upper-bound (Nguyen et al. 2010) to the expected value of mutual 
     information under the permutation model. Can be computed using Pandas cross_tab, or with a 

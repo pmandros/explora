@@ -13,12 +13,12 @@ import pandas as pd
 
 from explora.information_theory.information_theory_basic import mutual_information_plugin, entropy_plugin
 from explora.information_theory.permutation_model import \
-    expected__mutual_information_permutation_model_upper_bound, \
+    expected_mutual_information_permutation_model_upper_bound, \
     expected_mutual_information_permutation_model
 from explora.utilities.tools import merge_columns
 
 
-def mutual_information_permutation(X, Y, with_cross_tab=False, contingency_table=None,return_correction_term=False):
+def mutual_information_permutation(X, Y, with_cross_tab=False, contingency_table=None, return_correction_term=False):
     """
     The corrected estimator for mutual information I(X,Y) between two attribute sets X 
     and Y of Mandros et al. (KDD'2017) (corrects by subtracting the expected value
@@ -40,7 +40,8 @@ def mutual_information_permutation(X, Y, with_cross_tab=False, contingency_table
         return mi - correction, correction
 
 
-def fraction_of_information_permutation(X, Y, with_cross_tab=True, contingency_table=None, entropy_Y=None):
+def fraction_of_information_permutation(X, Y, with_cross_tab=False, contingency_table=None, entropy_Y=None,
+                                        return_correction_term=False):
     """
     The corrected estimator for fraction of information F(X,Y) between two attribute sets X 
     and Y of Mandros et al. (KDD'2017) (corrects by subtracting the expected value
@@ -53,13 +54,25 @@ def fraction_of_information_permutation(X, Y, with_cross_tab=True, contingency_t
     if isinstance(Y, pd.Series) or isinstance(Y, pd.DataFrame):
         Y = Y.to_numpy()
 
-    corMi = mutual_information_permutation(X, Y, with_cross_tab, contingency_table)
-    if entropy_Y == None:
+    # cor_mi = mutual_information_permutation(X, Y, with_cross_tab, contingency_table)
+    # if entropy_Y == None:
+    #     entropy_Y = entropy_plugin(Y)
+    # return cor_mi / entropy_Y
+
+    if entropy_Y is None:
         entropy_Y = entropy_plugin(Y)
-    return corMi / entropy_Y
+
+    if return_correction_term is False:
+        cor_mi = mutual_information_permutation(X, Y, with_cross_tab, contingency_table, return_correction_term=False)
+        return cor_mi / entropy_Y
+    else:
+        cor_mi, correction = mutual_information_permutation(X, Y, with_cross_tab, contingency_table,
+                                                           return_correction_term=True)
+        return cor_mi / entropy_Y, correction/entropy_Y
 
 
-def mutual_information_permutation_upper_bound(X, Y, with_cross_tab=True, contingency_table=None,return_correction_term=False):
+def mutual_information_permutation_upper_bound(X, Y, with_cross_tab=False, contingency_table=None,
+                                               return_correction_term=False):
     """
     The plugin estimator for mutual information I(X,Y) between two attribute sets X 
     and Y corrected with an upper bound of the permutation nodel. It can be computed
@@ -72,14 +85,15 @@ def mutual_information_permutation_upper_bound(X, Y, with_cross_tab=True, contin
         Y = Y.to_numpy()
 
     mi = mutual_information_plugin(X, Y, with_cross_tab, contingency_table)
-    correction = expected__mutual_information_permutation_model_upper_bound(X, Y, contingency_table)
+    correction = expected_mutual_information_permutation_model_upper_bound(X, Y, contingency_table)
     if return_correction_term is False:
         return mi - correction
     else:
         return mi - correction, correction
 
 
-def fraction_of_information_permutation_upper_bound(X, Y, with_cross_tab=True, contingency_table=None, entropy_Y=None):
+def fraction_of_information_permutation_upper_bound(X, Y, with_cross_tab=False, contingency_table=None, entropy_Y=None,
+                                                    return_correction_term=False):
     """
     The plugin estimator for fraction of information F(X,Y) between two attribute sets X 
     and Y corrected with an upper bound of the permutation nodel. It can be computed
@@ -91,10 +105,14 @@ def fraction_of_information_permutation_upper_bound(X, Y, with_cross_tab=True, c
     if isinstance(Y, pd.Series) or isinstance(Y, pd.DataFrame):
         Y = Y.to_numpy()
 
-    corMi = mutual_information_permutation_upper_bound(X, Y, with_cross_tab, contingency_table)
-    if entropy_Y == None:
-        entropy_Y = entropy_plugin(Y)
-    return corMi / entropy_Y
+    if return_correction_term is False:
+        cor_mi = mutual_information_permutation_upper_bound(X, Y, with_cross_tab, contingency_table,
+                                                            return_correction_term=False)
+        return cor_mi / entropy_Y
+    else:
+        cor_mi, correction = mutual_information_permutation_upper_bound(X, Y, with_cross_tab, contingency_table,
+                                                                        return_correction_term=True)
+        return cor_mi / entropy_Y, correction/entropy_Y
 
 
 def conditional_fraction_of_information_permutation(X, Y, Z):
@@ -157,9 +175,9 @@ def conditional_entropy_permutation_upper_bound(Z, Y):
         Y = Y.to_numpy()
         Z = Z.to_numpy()
 
-    entropyY = entropy_plugin(Y)
-    expectedMutual = expected__mutual_information_permutation_model_upper_bound(Z, Y)
-    return entropyY - expectedMutual
+    entropy_Y = entropy_plugin(Y)
+    expected_mi = expected_mutual_information_permutation_model_upper_bound(Z, Y)
+    return entropy_Y - expected_mi
 
 
 def conditional_entropy_permutation(Z, Y):
@@ -170,9 +188,9 @@ def conditional_entropy_permutation(Z, Y):
         Y = Y.to_numpy()
         Z = Z.to_numpy()
 
-    entropyY = entropy_plugin(Y)
-    expectedMutual = expected_mutual_information_permutation_model(Z, Y)
-    return entropyY - expectedMutual
+    entropy_Y = entropy_plugin(Y)
+    expected_mi = expected_mutual_information_permutation_model(Z, Y)
+    return entropy_Y - expected_mi
 
 
 # def main():

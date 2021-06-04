@@ -9,7 +9,7 @@ from pytest import approx
 
 import explora
 from explora.information_theory.permutation_model import (
-    expected_mutual_information_permutation_model, expected__mutual_information_permutation_model_upper_bound
+    expected_mutual_information_permutation_model, expected_mutual_information_permutation_model_upper_bound
 )
 
 
@@ -64,9 +64,9 @@ def test_expected_mutual_information_permutation_model_upper_bound_tic_tac_toe()
     data = pd.read_csv(testfile)
 
     error = 1e-10
-    emi = expected__mutual_information_permutation_model_upper_bound(data.iloc[:, 4], data.iloc[:, 9])
+    emi = expected_mutual_information_permutation_model_upper_bound(data.iloc[:, 4], data.iloc[:, 9])
     assert emi == approx(0.003011890532105174, rel=error)
-    emi = expected__mutual_information_permutation_model_upper_bound(data.iloc[:, [0, 2, 4, 6, 8]], data.iloc[:, 9])
+    emi = expected_mutual_information_permutation_model_upper_bound(data.iloc[:, [0, 2, 4, 6, 8]], data.iloc[:, 9])
     assert emi == approx(0.2422831283458568, rel=error)
 
 
