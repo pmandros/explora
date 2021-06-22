@@ -10,6 +10,8 @@ from explora.information_theory.estimators import fraction_of_information_permut
 from explora.optimization.exact_search import depth_first_search
 import time
 
+from explora.optimization.greedy_search import greedy_search
+
 data_file_mnist = "../datasets/mnist_test_10k_binary.csv"
 data_file_tic = "../datasets/tic_tac_toe.csv"
 
@@ -17,4 +19,5 @@ data_tic = pd.read_csv(data_file_tic)
 data_mnist = pd.read_csv(data_file_mnist)
 
 # exact DFS
-result, score = depth_first_search(data_tic, fraction_of_information_permutation, new_pruning_rule=False)
+# result, score = depth_first_search(data_tic, fraction_of_information_permutation, new_pruning_rule=True)
+result, score = greedy_search(mutual_information_permutation_upper_bound, data_mnist)
