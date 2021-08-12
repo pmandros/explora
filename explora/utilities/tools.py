@@ -104,7 +104,6 @@ def size_and_counts_of_contingency_table(X,Y,return_joint_counts=False,with_cros
         
         if with_cross_tab==True:         
             contingency_table=pd.crosstab(X,Y,margins = True)
-
             contingency_table=to_numpy_if_not(contingency_table)
             size=contingency_table[-1,-1]
             marginal_counts_Y=contingency_table[-1,:-1]

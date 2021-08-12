@@ -16,6 +16,7 @@ def shrink(conditional_estimator, grow_result, data, shrink_threshold=0, target=
     """
     For a dependency measure D(X;Y), it shrinks the grow_result G by calculating
     the conditional D(Z;Y|G-{Z}) for all Z in G and removing Z if bellow threshold
+    WARNING: requires grow_result to be 0 indexed (which might not be the case)
     """
 
     if isinstance(data, pd.DataFrame):
@@ -40,7 +41,6 @@ def shrink(conditional_estimator, grow_result, data, shrink_threshold=0, target=
             grow_result.remove(worse_candidate_index)
         else:
             return {x + 1 for x in grow_result}
-    # conditional_estimator(data[:,list(grow_result)],Y,[])
     return {x + 1 for x in grow_result}
 
 

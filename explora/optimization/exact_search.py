@@ -84,12 +84,18 @@ def depth_first_search(data, estimator, target_variable=None, new_pruning_rule=T
         # propagates most refinement elements to lowest scoring nodes (and not according to lowest opt value)
         for i in range(1, len(unpruned_refinement_elements)):
             unpruned_refinement = candidate_to_refine.copy()
-            unpruned_refinement.append(
-                refinements[-i - 1][1])  # append the index of the next lowest scoring node
+            unpruned_refinement.append(refinements[-i - 1][1])  # append the index of the next lowest scoring node
             refinement_elements_to_propagate = unpruned_refinement_elements[-i:]  # propagate most refinement elements
             new_queue_element = (unpruned_refinement, refinement_elements_to_propagate,
                                  refinements[-i - 1][0])
             queue.append(new_queue_element)
+
+        # for i in range(len(unpruned_refinement_elements) - 1):
+        #     unpruned_refinement = candidate_to_refine.copy()
+        #     unpruned_refinement.append(refinements[-i - 1][1])  # append the index of the next lowest scoring node
+        #     refinement_elements_to_propagate = unpruned_refinement_elements[:-1 - i]  # propagate most refinement elements
+        #     new_queue_element = (unpruned_refinement, refinement_elements_to_propagate, refinements[-i - 1][0])
+        #     queue.append(new_queue_element)
 
     best_solution = {x + 1 for x in best_solution}
     best_score = best_score

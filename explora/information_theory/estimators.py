@@ -105,6 +105,9 @@ def fraction_of_information_permutation_upper_bound(X, Y, with_cross_tab=False, 
     if isinstance(Y, pd.Series) or isinstance(Y, pd.DataFrame):
         Y = Y.to_numpy()
 
+    if entropy_Y is None:
+        entropy_Y = entropy_plugin(Y)
+
     if return_correction_term is False:
         cor_mi = mutual_information_permutation_upper_bound(X, Y, with_cross_tab, contingency_table,
                                                             return_correction_term=False)
