@@ -51,7 +51,7 @@ def depth_first_search(data, estimator, target_variable=None, new_pruning_rule=T
         # a tuple of (score, refinement_element_index, opt_value)
         refinements = refine_evaluate_get_optimistic_value_sort(estimator,
                                                                 data, target_data_column, candidate_to_refine,
-                                                                candidate_refinement_elements, entropy_target)
+                                                                candidate_refinement_elements)
 
         # get best
         best_refinement = refinements[0]

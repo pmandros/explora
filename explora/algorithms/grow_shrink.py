@@ -8,15 +8,16 @@ Created on Tue May 26 03:34:55 2020
 
 import numpy as np
 import pandas as pd
+import time
 
-from explora.algorithms import shrink
+from explora.algorithms.shrink import shrink
+from explora.information_theory.estimators import fraction_of_information_permutation
 from explora.optimization.greedy_search import greedy_search
 
 
-def grow_shrink(grow_estimator, shrink_estimator, data, shrink_threshold=0, target=None, limit=None):
+def grow_shrink(estimator, data, shrink_threshold=0, target=None, limit=None):
     """
-    For a dependency measure D(XY) and
-    conditional D(XY|Z), it greedily finds a maximizer for D(XY), and shrinks 
+    For a dependency measure D(X;Y), it greedily finds a maximizer for D(X;Y), and shrinks
     afterwards with the conditional. Not to be confused with the Grow Shrink for Markov
     blankets (although similar)
     """
@@ -29,12 +30,12 @@ def grow_shrink(grow_estimator, shrink_estimator, data, shrink_threshold=0, targ
 
     # start_time = time.time()  
 
-    [greedy_result, greedy_score] = greedy_search(grow_estimator, data, target, limit=limit)
+    [greedy_result, greedy_score] = greedy_search(estimator, data, target, limit=limit)
     # print("--- %s Time for grow---" % (time.time() - start_time))
 
     # start_time = time.time()  
     greedy_result = {x - 1 for x in greedy_result}
-    shrink_results = shrink(shrink_estimator, greedy_result, data, shrink_threshold=shrink_threshold, target=None)
+    shrink_results = shrink(estimator, greedy_result, data, shrink_threshold=shrink_threshold, target=None)
     # print("--- %s Time to shrink---" % (time.time() - start_time))
     return shrink_results
 
@@ -86,8 +87,7 @@ def grow_shrink(grow_estimator, shrink_estimator, data, shrink_threshold=0, targ
 #
 #     # performance with permutation corrected FI
 #     start_time = time.time()
-#     selected = grow_shrink(fraction_of_information_permutation,
-#                            conditional_fraction_of_information_permutation,
+#     selected = grow_shrink(mutual_information_permutation,
 #                            data.to_numpy(), shrink_threshold=0)
 #     print("--- %s seconds for grow shrink with permutation F1 on small data---" % (time.time() - start_time))
 #

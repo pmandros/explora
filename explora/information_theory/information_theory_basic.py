@@ -39,7 +39,7 @@ def mutual_information(prob_vector_X, prob_vector_Y, prob_vector_XY):
     return entropy(prob_vector_X) + entropy(prob_vector_Y) - entropy(prob_vector_XY);
 
 
-def mutual_information_plugin(X, Y, with_cross_tab=False, contingency_table=None):
+def mutual_information_plugin(X, Y, with_cross_tab=False, contingency_table=None, return_marginal_entropies=False):
     """
     The plugin estimator for mutual information I(X;Y) between two attribute sets X 
     and Y. It can be computed either using cross_tab from Pandas, or with
@@ -51,39 +51,33 @@ def mutual_information_plugin(X, Y, with_cross_tab=False, contingency_table=None
         Y = Y.to_numpy();
 
     if with_cross_tab == True or contingency_table != None:
-        return mutual_information_from_cross_tab(X, Y, contingency_table=contingency_table);
+        return mutual_information_from_cross_tab(X, Y, contingency_table=contingency_table,
+                                                 return_marginal_entropies=return_marginal_entropies);
     else:
-        entropyX = entropy_plugin(X);
+        entropy_X = entropy_plugin(X);
         entropy_Y = entropy_plugin(Y);
-        dataXY = append_two_arrays(X, Y);
-        entropyXY = entropy_plugin(dataXY);
-        return entropyX + entropy_Y - entropyXY
+        data_XY = append_two_arrays(X, Y);
+        entropy_XY = entropy_plugin(data_XY);
+        mi = entropy_X + entropy_Y - entropy_XY
+
+        if return_marginal_entropies:
+            return mi, entropy_X, entropy_Y
+        else:
+            return mi
 
 
-def fraction_of_information_plugin(X, Y, with_cross_tab=False, contingency_table=None, entropy_Y=None):
+def fraction_of_information_plugin(X, Y, with_cross_tab=False, contingency_table=None):
     """
     The plugin estimator for the fraction of information F(X;Y)=I(X,Y)/H(Y). 
     It can be computed either using cross_tab from Pandas, or with
     numpy. A precomputed contingency table and entropy of Y can be provided if
     it is available"""
 
-    if isinstance(X, pd.Series) or isinstance(X, pd.DataFrame):
-        X = X.to_numpy();
+    mi, entropy_X, entropy_Y = mutual_information_plugin(X, Y, with_cross_tab=with_cross_tab,
+                                                         contingency_table=contingency_table,
+                                                         return_marginal_entropies=True)
 
-    if isinstance(Y, pd.Series) or isinstance(Y, pd.DataFrame):
-        Y = Y.to_numpy();
-
-    if with_cross_tab == True or contingency_table != None:
-        return fraction_of_information_from_cross_tab(X, Y, contingency_table
-        =contingency_table, entropy_Y=entropy_Y);
-    else:
-        entropyX = entropy_plugin(X);
-
-        if entropy_Y == None:
-            entropy_Y = entropy_plugin(Y);
-        dataXY = append_two_arrays(X, Y);
-        entropyXY = entropy_plugin(dataXY);
-        return (entropyX + entropy_Y - entropyXY) / entropy_Y
+    return mi / entropy_Y
 
 
 def conditional_entropy_plugin(Z, Y):
@@ -110,7 +104,7 @@ def conditional_entropy_plugin(Z, Y):
     return conditional_entropy_plugin;
 
 
-def mutual_information_from_cross_tab(X, Y, contingency_table=None):
+def mutual_information_from_cross_tab(X, Y, contingency_table=None, return_marginal_entropies=False):
     """
     Computes mutual information using cross_tab from pandas. A precomputed 
     contingency table can be provided if it is available """
@@ -119,24 +113,13 @@ def mutual_information_from_cross_tab(X, Y, contingency_table=None):
                                                                                                     with_cross_tab=True,
                                                                                                     contingency_table=contingency_table)
 
-    return entropy(marginal_counts_X / size) + entropy(marginal_counts_Y / size) - entropy(joint_counts / size)
+    entropy_X = entropy(marginal_counts_X / size)
+    entropy_Y = entropy(marginal_counts_Y / size)
+    entropy_XY = entropy(joint_counts / size)
+    mi = entropy_X + entropy_Y - entropy_XY
 
+    if return_marginal_entropies:
+        return mi, entropy_X, entropy_Y
+    else:
+        return mi
 
-def fraction_of_information_from_cross_tab(X, Y, contingency_table=None, entropy_Y=None):
-    """
-    Computes fraction of information using cross_tab from pandas. A precomputed 
-    contingency table can be provided if it is available """
-    size, marginal_counts_X, marginal_counts_Y, joint_counts = size_and_counts_of_contingency_table(X, Y,
-                                                                                                    return_joint_counts=True,
-                                                                                                    with_cross_tab=True,
-                                                                                                    contingency_table=contingency_table)
-    if entropy_Y == None:
-        entropy_Y = entropy(marginal_counts_Y / size);
-    return (entropy(marginal_counts_X / size) + entropy_Y - entropy(joint_counts / size)) / entropy_Y
-
-
-# def main():
-#
-#
-# if __name__ == '__main__':
-#     main()

@@ -9,7 +9,7 @@ from pytest import approx
 import explora
 from explora.information_theory.estimators import (
     mutual_information_permutation_upper_bound, mutual_information_permutation,
-    conditional_fraction_of_information_permutation, fraction_of_information_permutation
+    conditional_mutual_information, fraction_of_information_permutation, mutual_information_chi_square
 )
 
 
@@ -41,7 +41,21 @@ def test_mutual_information_permutation():
                                                    with_cross_tab=True)
     res_numpy = mutual_information_permutation(data.iloc[:, [0, 2, 4, 6, 8]], data.iloc[:, 9],
                                                with_cross_tab=False)
+    # assert
+    assert res_cross_tab == res_numpy
 
+def test_mutual_information_chi_square():
+    """ Tests choose_no_overflow for simple cases """
+    # input
+    testfile = Path(explora.__file__).parent.parent / "datasets" / "tic_tac_toe.csv"
+    data = pd.read_csv(testfile)
+    # do
+    res_cross_tab = mutual_information_chi_square(data.iloc[:, [0, 2, 4, 6, 8]], data.iloc[:, 9],
+                                                   with_cross_tab=True)
+    res_numpy = mutual_information_chi_square(data.iloc[:, [0, 2, 4, 6, 8]], data.iloc[:, 9],
+                                               with_cross_tab=False)
+
+    print(res_numpy)
     # assert
     assert res_cross_tab == res_numpy
 
@@ -71,7 +85,7 @@ def test_conditional_fraction_information_permutation():
     error = 1e-10
 
     # do
-    res = conditional_fraction_of_information_permutation(data.iloc[:, [0, 2, 6, 8]], data.iloc[:, 9],
+    res = conditional_mutual_information(data.iloc[:, [0, 2, 6, 8]], data.iloc[:, 9],
                                                           data.iloc[:, 4])
 
     # assert

@@ -43,7 +43,7 @@ def refine_and_evaluate_generator(estimator, data, target_data_column, selected_
 
 def refine_evaluate_get_optimistic_value_generator(estimator, data, target_data_column,
                                                    selected_variables_indices,
-                                                   candidate_variables_indices, entropy_target = None,
+                                                   candidate_variables_indices,
                                                    selected_data_column=None):
     """
     Creates a generator of all refinements, their scores, and their optimistic value to be used for pruning.
@@ -56,10 +56,10 @@ def refine_evaluate_get_optimistic_value_generator(estimator, data, target_data_
     for candidate_index in candidate_variables_indices:
         if selected_data_column is None:
             result, correction = estimator(data[:, (*selected_variables_indices, candidate_index)],
-                                           target_data_column, entropy_Y=entropy_target, return_correction_term=True)
+                                           target_data_column, return_correction_term=True)
         else:
             merged_in_one = append_and_merge(selected_data_column, data[:, candidate_index])
-            result, correction = estimator(merged_in_one, target_data_column, entropy_Y=entropy_target,
+            result, correction = estimator(merged_in_one, target_data_column,
                                            return_correction_term=True)
 
         estimator_name = estimator.__name__
@@ -98,7 +98,7 @@ def refine_evaluate_choose(estimator, data, target_data_column, selected_variabl
 
 
 def refine_evaluate_get_optimistic_value_sort(estimator, data, target_data_column, selected_variables_indices,
-                                              candidate_variables_indices, entropy_target=None,
+                                              candidate_variables_indices,
                                               selected_data_column=None):
     """
     It performs all refinements, computes their score, gets their optimistic value and sorts
@@ -110,7 +110,6 @@ def refine_evaluate_get_optimistic_value_sort(estimator, data, target_data_colum
         target_data_column=target_data_column,
         selected_variables_indices=selected_variables_indices,
         candidate_variables_indices=candidate_variables_indices,
-        entropy_target=entropy_target,
         selected_data_column=selected_data_column
     )
 
