@@ -22,7 +22,7 @@ result, score = greedy_markov_blanket_discovery(mutual_information_chi_square, d
 print(f'greedy and chi square estimator: selected attributes {result} with score {score}')
 result = {x - 1 for x in result}
 shrink_result, shrink_score = shrink(mutual_information_chi_square, result, data, shrink_threshold=0.01)
-print(f'after shrink and chi square estimator: selected attributes {shrink_result} with score {shrink_score}')
+print(f'after shrinking with chi square estimator: selected attributes {shrink_result} with score {shrink_score}')
 
 # # random greedy
 # result, score = random_markov_blanket_discovery(fraction_of_information_permutation, data)
