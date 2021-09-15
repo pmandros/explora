@@ -29,8 +29,11 @@ def expected_mutual_information_permutation_model_upper_bound(X, Y, with_cross_t
     domain_size_X = len(marginal_counts_X)
     domain_size_Y = len(marginal_counts_Y)
 
-    return np.log2((size + domain_size_X * domain_size_Y - domain_size_X - domain_size_Y) / (size - 1))
-
+    numerator=size + domain_size_X * domain_size_Y - domain_size_X - domain_size_Y
+    if numerator == 0:
+        return 0
+    else:
+        return np.log2(numerator / (size - 1))
 
 def expected_mutual_information_permutation_model(X, Y, with_cross_tab=False, contingency_table=None, num_threads=1):
     """
